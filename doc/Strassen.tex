@@ -1,0 +1,109 @@
+\documentclass{scrartcl}
+\usepackage[a4paper, total={6in, 10in}]{geometry}
+\usepackage[ngerman]{babel}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+
+% Deutsche Begriffe für Eingabe/Ausgabe
+\algrenewcommand\algorithmicrequire{\textbf{Eingabe:}}
+\algrenewcommand\algorithmicensure{\textbf{Ausgabe:}}
+
+\title{Matrixmultiplikation}
+\author{Algorithmus von \textsc{Strassen}}
+\date{\today}
+
+\begin{document}
+\maketitle
+Beim Algorithmus von Strassen für die Multiplikation von zwei $n \times n$ Matrizen lautet die Rekurrenz zur Ermittlung der Laufzeit $T(n)$ des Algorithmus
+\begin{align*}
+	T(n) = 7 \: T(\tfrac{n}{2}) + c\: n^2.
+\end{align*}
+Der Algorithmus halbiert in jedem rekursiven Aufruf die beiden $n \times n$ Matrizen zu vier $\tfrac{n}{2} \times \tfrac{n}{2}$ Matrizen. Substituieren wir $n$ durch $\tfrac{n}{2}$, erhalten wir für
+\begin{align*}
+	T(\tfrac{n}{2}) &= 7 \: T(\tfrac{n}{4}) + c(\tfrac{n}{2})^2 = 7 \: T(\tfrac{n}{4}) + \tfrac{c}{4}n^2.
+\end{align*}
+Nach dem \textit{ersten} rekursiven Aufruf erhalten wir mit $T(\frac{n}{2})$ eingesetzt in $T(n)$ dann
+\begin{align*}
+	T(n) &= 7 \: (7 \: T(\tfrac{n}{4}) + \tfrac{c}{4} \: n^2) + c n^2 \\
+	&= 7^2\: T(\tfrac{n}{4}) + \tfrac{7}{4} \: cn^2 + c n^2.
+\end{align*}
+Mit dem \textit{zweiten} rekursiven Aufruf werden die vier $\tfrac{n}{2} \times \tfrac{n}{2}$ Matrizen wieder halbiert zu acht $\tfrac{n}{4} \times \tfrac{n}{4}$ Matrizen. Damit ist
+\begin{align*}
+	T(\tfrac{n}{4}) &= 7 \: T(\tfrac{n}{8}) + c(\tfrac{n}{4})^2 = 7 \: T(\tfrac{n}{8}) + \tfrac{c}{16}n^2.
+\end{align*}
+Wird $T(\tfrac{n}{4})$ eingesetzt in $T(n)$ ergibt sich
+\begin{align*}
+	T(n) &= 7^2\: (7 \: T(\tfrac{n}{8}) + \tfrac{c}{16}n^2) + \tfrac{7}{4}cn^2 + c n^2 \\
+	&= 7^3\: T(\tfrac{n}{2^3}) + \tfrac{7^2}{4^2}cn^2 + \tfrac{7}{4}cn^2 + c n^2.
+\end{align*}
+Betrachten wir nun den $k$-ten rekursiven Aufruf finden wir für 
+\begin{align*}
+	T(n) = 7^k \: T \: \big(\tfrac{n}{2^k}\big) + cn^2 \: \sum_{i = 0}^{k-1} \bigg(\frac{7}{4}\bigg)^i.
+\end{align*}
+Zur Vereinfachung belassen wir es bei dem $k$-ten rekursiven Aufruf auch in $T(n)$ bei $k$ und nicht $k + 1$. Kleinere Matrizen als $1 \times 1$ Matrizen gibt es nicht, daher können die $n \times n$ Matrizen nur $k$ mal halbiert werden. Der größte Wert, den $k$ annehmen kann, ist $k = \log_{2}n$. Damit ist
+\begin{align*}
+	\vphantom{\rule{0pt}{2.5ex}} T(n) &= 7^{\log_{2}n} \: T\Big(\frac{n}{2^{\log_{2}n}}\Big) + cn^2 \: \sum_{i = 0}^{\log_{2}n-1} \left(\tfrac{7}{4}\right)^i \\
+	\vphantom{\rule{0pt}{2.5ex}} &= n^{\log_{2}7} \: T(1) + cn^2 \:\frac{\left(\tfrac{7}{4}\right)^{\log_{2}n} - 1}{\tfrac{7}{4} - 1} \\
+	\vphantom{\rule{0pt}{2.5ex}} &= O\left(n^{2.8074}\right) + cn^2 \left(\tfrac{7}{4}\right)^{\log_{2}n} \\
+	\vphantom{\rule{0pt}{2.5ex}} &= O\left(n^{2.8074}\right) + cn^2 \cdot n^{\log_{2}\tfrac{7}{4}} \\
+	\vphantom{\rule{0pt}{2.5ex}} &= O\left(n^{2.8074}\right) + cn^{2.8074} \\
+	\vphantom{\rule{0pt}{2.5ex}} &= O\left(n^{2.8074}\right).
+\end{align*}
+Es folgt der Algorithmus \ref{alg:strassen} von Strassen  als Pseudocode. Als Eingabe erhalten wir zwei $n \times n$ Matrizen. Der Einfachheit halber wird angenommen, dass $n$ eine Zweierpotenz ist. Zu Beginn prüfen wir, ob die Größe der Matrizen bereits den Wert $1$ hat. Haben die Matrizen den Wert $1$, geben wir das Produkt $A B$ zurück.
+\begin{algorithm}
+	\caption{\textsc{Strassen}$(A, B)$}
+	\label{alg:strassen}
+	\begin{algorithmic}[1]
+		\Require Matrizen $A$ und $B$, beide $n \times n$, wobei $n = 2^k$, $k \in \mathbb{N}$
+		\Ensure Produktmatrix $C = AB$
+		\If{$n = 1$} $C = AB$ %\Comment{Skalarmultiplikation}
+		\State \textbf{return} $C$
+		\EndIf
+		%\Comment{Matrizen in $n/2 \times n/2$ Blöcke unterteilen}
+		\State $A = \begin{pmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{pmatrix}$
+		\State $B = \begin{pmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{pmatrix}$
+		%\Comment{Berechne die 7 Produkte rekursiv}
+		\State $P_1 = \textsc{Strassen}(A_{11} + A_{22}, B_{11} + B_{22})$
+		\State $P_2 = \textsc{Strassen}(A_{21} + A_{22}, B_{11})$
+		\State $P_3 = \textsc{Strassen}(A_{11}, B_{12} - B_{22})$
+		\State $P_4 = \textsc{Strassen}(A_{22}, B_{21} - B_{11})$
+		\State $P_5 = \textsc{Strassen}(A_{11} + A_{12}, B_{22})$
+		\State $P_6 = \textsc{Strassen}(A_{21} - A_{11}, B_{11} + B_{12})$
+		\State $P_7 = \textsc{Strassen}(A_{12} - A_{22}, B_{21} + B_{22})$
+		% \Comment{Berechne die Blöcke von $C$}
+		\State $C_{11} = P_1 + P_4 - P_5 + P_7$
+		\State $C_{12} = P_3 + P_5$
+		\State $C_{21} = P_2 + P_4$
+		\State $C_{22} = P_1 - P_2 + P_3 + P_6$
+		\State \textbf{return} $C = \begin{pmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \end{pmatrix}$
+	\end{algorithmic}
+\end{algorithm}
+In Zeile 4 und 5 werden die Matrizen $A$ und $B$ so definiert, dass in den Zeilen 6 bis 12 die sieben Matrixmultiplikationen jeweils durchgeführt werden. In den Zeilen 13 bis 16 werden 4 Matrizen $C_{ij}$ durch Addition und Subtraktion der Matrizen $A_{ij}$ berechnet und in Zeile 17 Matrix $C$ als Ergebnis zurückgegeben.
+
+Als Idee zum Beweis der Korrektheit betrachten wir das Produkt $A \cdot B$ der zwei Matrizen $A$ und $B$ mit
+\begin{align*}
+	A = \begin{pmatrix} a & b \\ c & d \end{pmatrix} \quad \text{und} \quad B = \begin{pmatrix} e & f \\ g & h \end{pmatrix}.
+\end{align*}
+Zur Vereinfachung beinhalten die Matrizen nur skalare Werte. Das Ergebnis $C = A \cdot B$ ist
+\begin{align*}
+	C = \begin{pmatrix} ae + bg & af + bh \\ ce + dg & cf + dh \end{pmatrix}.
+\end{align*}
+Der Algorithmus von Strassen berechnet $P_i$ mit
+\begin{align*}
+	P_1 &= \textsc{Strassen}(a + d, e + h) && = ae + ah + de + dh\\
+	P_2 &= \textsc{Strassen}(c + d, e) && = ce + de \\
+	\vdots \\
+	P_7 &= \textsc{Strassen}(b - d, g + h) && = bg + bh - dg - dh.
+\end{align*}
+Dann werden $C_{ij}$ berechnet mit
+\begin{align*}
+	C_{11} & = P_1 + P_4 - P_5 + P_7 && = ae + bg\\
+	C_{12} & = P_3 + P_5 && = af + bh\\
+	C_{21} & = P_2 + P_4 && = ce + dg\\
+	C_{22} & = P_1 - P_2 + P_3 + P_6 && = cf + dh,
+\end{align*}
+wobei z.B. $ C_{11} = (ae + ah + de + dh) + (dg - de) - (ah + bh) + (bg + bh - dg - dh) = ae + bg$. Für einen formalen Beweis der Korrektheit verzichten wir auf die vollständige Induktion über $n \in \mathbb{N}$ der $n \times n$ Matrizen.
+\end{document}

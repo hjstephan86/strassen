@@ -1,7 +1,7 @@
 # strassen.py
 
 import math
-from matrix import Matrix # Import the Matrix class from the matrix module
+from .matrix import Matrix # Import the Matrix class from the matrix module
 
 def _get_next_power_of_2(n):
     """Helper to find the next power of 2 greater than or equal to n."""

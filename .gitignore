@@ -1,5 +1,7 @@
 __pycache__/
 venv/
+.vscode/
+.coverage
 *.aux
 *.log
 *.gz

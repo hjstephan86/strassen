@@ -7,8 +7,8 @@ import numpy as np # For easier random matrix generation
 import psutil # For system monitoring
 
 # Import our custom Matrix class and Strassen's algorithm
-from matrix import Matrix
-from strassen import strassen_multiply
+from .matrix import Matrix
+from .strassen import strassen_multiply
 
 # --- Helper function to print system usage ---
 def print_system_usage(stage="", file=None):

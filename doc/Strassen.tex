@@ -66,8 +66,8 @@ Es folgt der Algorithmus \ref{alg:strassen} von \textsc{Strassen}  als Pseudocod
 	\caption{\textsc{Strassen}$(A, B)$}
 	\label{alg:strassen}
 	\begin{algorithmic}[1]
-		\Require Matrizen $A$ und $B$, beide $n \times n$, wobei $n = 2^k$, $k \in \mathbb{N}$
-		\Ensure Produktmatrix $C = AB$
+		\Require $\langle A, B \rangle$, mit $n \times n$ Matrizen $A$, $B$, $n = 2^k$, $k \in \mathbb{N}$
+		\Ensure $\langle C \rangle$, mit Produktmatrix $C = AB$
 		\If{$n = 1$} $C = AB$ %\Comment{Skalarmultiplikation}
 		\State \textbf{return} $C$
 		\EndIf
@@ -104,7 +104,10 @@ Der Algorithmus von \textsc{Strassen} berechnet $P_i$ mit
 \begin{align*}
 	P_1 &= \textsc{Strassen}(a + d, e + h) && = ae + ah + de + dh\\
 	P_2 &= \textsc{Strassen}(c + d, e) && = ce + de \\
-	\vdots \\
+	P_3 &= \textsc{Strassen}(a, f - h) && = af - ah\\
+	P_4 &= \textsc{Strassen}(d, g - e) && = dg - de \\
+	P_5 &= \textsc{Strassen}(a + b, h) && = ah + bh \\
+	P_6 &= \textsc{Strassen}(c - a, e + f) && = ce + cf - ae - af\\
 	P_7 &= \textsc{Strassen}(b - d, g + h) && = bg + bh - dg - dh.
 \end{align*}
 Dann werden $C_{ij}$ berechnet mit
@@ -206,5 +209,41 @@ Aus der Tabelle lässt sich ablesen, dass für kleine Matrizen (z.B. $n \le 64$)
 	\label{fig:time-comparison}
 \end{figure}
 
-Die Abbildung \ref{fig:time-comparison} zeigt die Verläufe der Laufzeit beider Matrixmultiplikationen. Für $n = 56$ liefen sowohl die ursprüngliche als auch \textsc{Strassen}s Multiplikation schneller als für vorherige $n < 56 = 7 \cdot 8$. \textsc{Strassen} verwendet 7 Matrixmultiplikationen, d. h., 14 Untermatrizen. Wie wäre es, wenn 15 Untermatrizen bzw. Strukturen für eine schnellere Matrixmultiplikation als die von \textsc{Strassen} verwendet würden? Die Idee besteht darin, 15 Untermatrizen bzw. Strukturen in den beiden $n \times n$ Matrizen zu finden, um \textsc{Strassen}s Laufzeit zu verbessern. Betrachte dazu die Diagonale der Matrix $B$, um nur 6 statt 7 Matrixmultiplikationen durchzuführen. Kombiniere $P_2$ und $P_5$ zu $P_{25}$, die jeweils die Diagonalelemente $B_{11}$ und $B_{22}$ der Matrix $B$ zur Multiplikation verwenden, wodurch eine Laufzeit im Exponenten von $n$ von $2,585$ statt $2,807$ erreicht wird.
+Die Abbildung \ref{fig:time-comparison} zeigt die Verläufe der Laufzeit beider Matrixmultiplikationen. Für $n = 56$ liefen sowohl die ursprüngliche als auch \textsc{Strassen}s Multiplikation schneller als für vorherige $n < 56 = 7 \cdot 8$. \textsc{Strassen} verwendet 7 Matrixmultiplikationen, d. h., 14 Untermatrizen. Wie wäre es, wenn 15 Untermatrizen bzw. Strukturen für eine schnellere Matrixmultiplikation als die von \textsc{Strassen} verwendet würden? Die Idee besteht darin, 15 Untermatrizen bzw. Strukturen in den beiden $n \times n$ Matrizen zu finden, um \textsc{Strassen}s Laufzeit zu verbessern. Betrachte dazu die Diagonale der Matrix $B$, um nur 5 statt 7 Matrixmultiplikationen durchzuführen, wodurch eine Laufzeit im Exponenten von $n$ von $2,3219$ statt $2,807$ erreicht wird. Betrachtet man $P_2 = (c + d) \cdot e$ und $P_5 = (a + b) \cdot h$, dann fällt auf, dass $P_2$ durch $P_6$ und $P_1$ ermittelt werden kann und $P_5$ durch $P_1$ und $P_7$. Dazu müssen $P_1$, $P_6$ und $P_7$ berechnet werden bevor $P_2$ und $P_5$ ohne Multiplikation bestimmt werden können. Da nur 5 Matrixmultiplikationen verwendet werden kann das Ergebnis der Laufzeitanalyse wiederverwendet werden mit dem Unterschied, dass 
+\begin{align*}
+	\vphantom{\rule{0pt}{2.5ex}} T(n) &= 5^{\log_{2}n} \: T\Big(\frac{n}{2^{\log_{2}n}}\Big) + cn^2 \: \sum_{i = 0}^{\log_{2}n-1} \left(\tfrac{5}{4}\right)^i
+	\vphantom{\rule{0pt}{2.5ex}} = n^{\log_{2}5} \: T(1) + cn^2 \:\frac{\left(\tfrac{5}{4}\right)^{\log_{2}n} - 1}{\tfrac{5}{4} - 1}
+	\vphantom{\rule{0pt}{2.5ex}} = O\left(n^{2.3219}\right).
+\end{align*}
+Dazu wird der Algorithmus von \textsc{Strassen} zu \textsc{Strassen-25} so geändert, dass $P_6$ und $P_7$ in Zeile 7 und 8 berechnet werden bevor $P_2$ und $P_5$ in Zeile 9 und 10 ermittelt werden.
+\begin{algorithm}
+	\caption{\textsc{Strassen-25}$(A, B)$}
+	\label{alg:strassen}
+	\begin{algorithmic}[1]
+		\Require $\langle A, B \rangle$, mit $n \times n$ Matrizen $A$, $B$, $n = 2^k$, $k \in \mathbb{N}$
+		\Ensure $\langle C, A_{ij}, B_{ij} \rangle$, mit Produktmatrix $C = AB$ und $A_{ij}$, $B_{ij}$
+		\If{$n = 1$} $C = AB$ %\Comment{Skalarmultiplikation}
+		\State \textbf{return} $C$
+		\EndIf
+		%\Comment{Matrizen in $n/2 \times n/2$ Blöcke unterteilen}
+		\State $A = \begin{pmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{pmatrix}$
+		\State $B = \begin{pmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{pmatrix}$
+		%\Comment{Berechne die 7 Produkte rekursiv}
+		\State $P_1 = \textsc{Strassen-25}(A_{11} + A_{22}, B_{11} + B_{22})$, $P_1 = \langle C^{'}, A^{'}_{11}, A^{'}_{22}, B^{'}_{11}, B^{'}_{22} \rangle$
+		\State $P_6 = \textsc{Strassen-25}(A_{21} - A_{11}, B_{11} + B_{12})$, $P_6 = \langle C^{'}, A^{'}_{21}, A^{'}_{11}, B^{'}_{11}, B^{'}_{12} \rangle$
+		\State $P_7 = \textsc{Strassen-25}(A_{12} - A_{22}, B_{21} + B_{22})$, $P_7 = \langle C^{'}, A^{'}_{12}, A^{'}_{22}, B^{'}_{21}, B^{'}_{22} \rangle$
+		\State $P_2 = A^{'}_{21}A^{'}_{22} + A^{'}_{22}B^{'}_{11}$ von $P_6$, $P_1$ 
+		\State $P_5 = A^{'}_{11}B^{'}_{22} + A^{'}_{12}B^{'}_{22}$ von $P_1$, $P_7$
+		\State $P_3 = \textsc{Strassen-25}(A_{11}, B_{12} - B_{22})$, $P_3 = \langle C^{'}, A^{'}_{11}, B^{'}_{12}, B^{'}_{22} \rangle$ 
+		\State $P_4 = \textsc{Strassen-25}(A_{22}, B_{21} - B_{11})$, $P_4 = \langle C^{'}, A^{'}_{22}, B^{'}_{21}, B^{'}_{11} \rangle$ 
+		% \Comment{Berechne die Blöcke von $C$}
+		\State $C_{11} = P_1 + P_4 - P_5 + P_7$
+		\State $C_{12} = P_3 + P_5$
+		\State $C_{21} = P_2 + P_4$
+		\State $C_{22} = P_1 - P_2 + P_3 + P_6$
+		\State \textbf{return} $C = \begin{pmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \end{pmatrix}$
+	\end{algorithmic}
+\end{algorithm}
+
+Bei der Analyse der gemessenen Laufzeit des in Python implementierten Algorithmus \textsc{Strassen-25}$(A, B)$ ist zu erwarten, dass mit 5 Matrixmultiplikationen weniger Laufzeit gemessen wird als mit \textsc{Strassen}$(A, B)$. 
 \end{document}

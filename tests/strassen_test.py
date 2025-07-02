@@ -1,4 +1,4 @@
-# test_strassen.py
+# strassen_test.py
 
 import unittest
 import math

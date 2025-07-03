@@ -10,9 +10,11 @@
 			xlabel={Größe $n$ der $n \times n$ Matrizen},
 			ylabel={Durchschnittliche Laufzeit (s)},
 			xmin=0, xmax=260,
-			ymin=0, ymax=2,
+			ymin=0.00001, % Adjusted for logarithmic scale, cannot be 0
+			ymax=2,
 			xtick={0,32,...,256},
-			ytick={0,0.5,...,2},
+			ymode=log, % Changed to logarithmic scale
+			% ytick={0,0.5,...,2}, % ytick values should be adjusted for log scale or omitted
 			legend pos=north west,
 			grid=major
 			]
@@ -84,7 +86,7 @@
 			};
 			\addlegendentry{Standard Multiplikation}
 			
-			\addplot[color=orange, thick] table {
+			\addplot[color=brown, thick] table {
 				4   0.000045
 				8   0.000142
 				12  0.000698
@@ -153,7 +155,8 @@
 			\addlegendentry{\textsc{Strassen} Multiplikation}
 			
 			% Vertical dashed line at n = 256
-			\addplot[red, thick, dashed] coordinates {(256, 0) (256, 2)};
+			\addplot[orange, thick, dashed] coordinates {(56, 0.00001) (56, 2)}; % Adjusted
+			\addplot[red, thick, dashed] coordinates {(256, 0.00001) (256, 2)}; % Adjusted y-coordinates for log scale
 		\end{axis}
 	\end{tikzpicture}
 \end{document}

@@ -13,8 +13,16 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
+\usepackage[colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
+% Optionale Optionen:
+%   colorlinks=true: Macht die Links farbig statt nur einen Rahmen darum zu legen.
+%   linkcolor=blue: Farbe für interne Links (z.B. von \ref zu \label)
+%   citecolor=green: Farbe für Zitate (wenn du BibTeX/BibLaTeX nutzt)
+%   urlcolor=cyan: Farbe für URLs (wenn du \url{} nutzt)
+
 \newtheorem{satz}{Satz}[section]
 \newtheorem{lemma}{Lemma}[section]
+\newtheorem{definition}{Definiton}[section]
 
 \makeatletter
 \renewcommand{\ALG@name}{Algorithmus}
@@ -28,9 +36,9 @@
 
 \begin{document}
 \maketitle
-\begin{abstract}
-	Diese Arbeit untersucht den \textsc{Strassen}-Algorithmus zur Matrixmultiplikation, der eine schnellere Laufzeit von $O(n^{\log_2 7})$ gegenüber dem Standardalgorithmus mit $O(n^3)$ hat. Die Rekurrenzgleichung des Algorithmus wird dazu hergeleitet und gelöst. Der Algorithmus wird in Pseudocode präsentiert und seine Korrektheit exemplarisch demonstriert. Experimentelle Ergebnisse einer Python-Implementierung zeigen, dass \textsc{Strassen} für kleine Matrizen aufgrund des Rekursionsaufwands zunächst langsamer ist, für größere Matrizen (ab $n=256$) die Standardmethode jedoch übertrifft. \textsc{Strassen}'s Algorithmus wird erweitert zu \textsc{Strassen-25}, um die Anzahl der Matrixmultiplikationen von sieben auf fünf zu reduzieren. Es wird gezeigt, dass es keinen Teile-und-Herrsche Algorithmus geben kann, der weniger als fünf Matrixmultiplikationen benötigt. Zudem wird das \textit{optimale Teile-und-Herrsche Prinzip} betrachtet und gezeigt, dass es die effizienteste Methode ist, um geeignete Probleme zu lösen. Es wird gezeigt, dass zwei $n \times n$ Matrizen nicht schneller multipliziert werden können als in $O(n^{2.3219})$. Es wird gezeigt, dass das optimale Teile-und-Herrsche Prinzip optimal ist.
-\end{abstract}
+\vspace{5em}
+\tableofcontents
+\newpage
 
 \section{Laufzeit}
 Beim Algorithmus von \textsc{Strassen} für die Multiplikation von zwei $n \times n$ Matrizen lautet die Rekurrenzgleichung zur Ermittlung der Laufzeit $T(n)$ des Algorithmus
@@ -215,7 +223,7 @@ Um die theoretische Laufzeitanalyse von \textsc{Strassen}s Algorithmus zu überp
 \end{table}
 Ein interner Schwellwert (threshold) von 32 wurde für \textsc{Strassen}s Algorithmus festgelegt, was bedeutet, dass für Matrizen, deren Größe kleiner oder gleich 32 ist, auf die Standard-Matrixmultiplikation umgeschaltet wird, um den zusätzliche Aufwand der Rekursion zu reduzieren. Die Systemauslastung vor Beginn der Experimente betrug 0,0\% CPU-Auslastung bei 3.38 GB verwendetem RAM von insgesamt 7.01 GB. Nach Abschluss der Experimente betrug die CPU-Auslastung 3.8\% und der verwendete RAM 3.43 GB, was auf eine moderate Systemauslastung während der Messungen hinweist. Die Messergebnisse sind in Tabelle \ref{tab:strassen-results} zusammengefasst.
 
-Aus der Tabelle lässt sich ablesen, dass für kleine Matrizen (z.B. $n \le 64$) die Standard-Matrixmultiplikation tendenziell schneller war oder eine vergleichbare Performance wie \textsc{Strassen}s Algorithmus aufwies. Dies ist auf den zusätzlichen Aufwand der Rekursion und der zusätzlichen Matrixadditionen/-subtraktionen bei \textsc{Strassen}s Algorithmus zurück-zuführen. Insbesondere ist der Sprung in der Laufzeit des Algorithmus bei $n=36$ (nach dem eingestellten Schwellenwert von $n=32$) auffällig, was den Wechsel von der optimierten Basis-Multiplikation zur rekursiven Struktur widerspiegelt. Erst ab $n=256$ übertrifft \textsc{Strassen} die Standardmultiplikation leicht. Die tatsächliche Laufzeit wird jedoch stark vom gewählten Schwellwert und der Effizienz der Implementierung der Basisfälle beeinflusst.
+Aus der Tabelle lässt sich ablesen, dass für kleine Matrizen (z.B. $n \le 64$) die Standard-Matrixmultiplikation tendenziell schneller war oder eine vergleichbare Performance wie \textsc{Strassen}s Algorithmus aufwies. Dies ist auf den zusätzlichen Aufwand der Rekursion und der zusätzlichen Matrixadditionen/-subtraktionen bei \textsc{Strassen}s Algorithmus zurück-zuführen. Insbesondere ist der Sprung in der Laufzeit des Algorithmus bei $n=36$ (nach dem eingestellten Schwellenwert von $n=32$) auffällig, was den Wechsel von der optimierten Basis-Multiplikation zur rekursiven Struktur widerspiegelt. Erst ab $n=256$ übertrifft \textsc{Strassen} die Standardmultiplikation leicht. Die tatsächliche Laufzeit wird jedoch stark vom gewählten Schwellwert und der Effizienz der Implementierung der Basisfälle beeinflusst. Die Abbildung \ref{fig:time-comparison} zeigt die Verläufe der benötigten Rechenzeit beider Matrixmultiplikationen. Für $n = 56$ waren sowohl die Standard als auch \textsc{Strassen}s Multiplikation schneller als für vorherige $n < 56$.
 
 \begin{figure}[h]
 	\centering
@@ -224,7 +232,7 @@ Aus der Tabelle lässt sich ablesen, dass für kleine Matrizen (z.B. $n \le 64$)
 	\label{fig:time-comparison}
 \end{figure}
 
-Die Abbildung \ref{fig:time-comparison} zeigt die Verläufe der benötigten Rechenzeit beider Matrixmultiplikationen. Für $n = 56$ waren sowohl die Standard als auch \textsc{Strassen}s Multiplikation schneller als für vorherige $n < 56$. \textsc{Strassen} verwendet 7 Matrixmultiplikationen für zwei Matrizen der Größe $n \times n$. Lässt sich die Anzahl der benötigten Matrixmultiplikationen reduzieren?
+\textsc{Strassen} verwendet 7 Matrixmultiplikationen für zwei Matrizen der Größe $n \times n$. Lässt sich die Anzahl der benötigten Matrixmultiplikationen reduzieren?
 
 \section{Optimierung}
 Um die Anzahl der benötigten Matrixmultiplikationen von 7 auf 5 zu reduzieren, wird die Diagonale $e$ und $h$ der Matrix $B$ betrachtet. Dadurch wird für $n$ eine Laufzeit im Exponenten von $2.3219$ statt $2.807$ erreicht. Betrachtet man $P_2 = (c + d) \cdot e = ce + de$ und $P_5 = (a + b) \cdot h = ah + bh$, dann fällt auf, dass $P_2$ durch $P_6$ und $P_1$ ermittelt werden kann,
@@ -324,11 +332,36 @@ Wenn es bei einer Lösung erforderlich ist, jedes Element der Eingabe während d
 	Der Beweis folgt daraus, dass Algorithmen, die nach dem optimalen Teile-und-Herrsche Prinzip Lösungsvorschriften abarbeiten, logarithmische Laufzeit haben müssen. 
 \end{proof}
 
-Algorithmen folgen einem Lösungsprinzip nach dem sie ein Problem lösen. Es gibt zum Beispiel das optimale Teile-und-Herrsche Prinzip oder das Prinzip der dynamischen Programmierung. Es kann sich lohnen, die Klasse $\mathbf{P}$ in Komplexitätsklassen einzuteilen, bei der eine Klasse durch ein Lösungsprinzip und ihre charakteristische Laufzeit beschrieben wird. Zum Beispiel kann man sich die Klasse vorstellen, in der alle Probleme enthalten sind, die nach dem optimalen Teile-und-Herrsche Prinzip zu lösen sind und nicht besser. Da die charakteristische Laufzeit dieser Klasse die logarithmische ist, könnte sie den Namen $\mathbf{L}$ haben. Man kann sich auch die Klasse $\mathbf{P_2}$ vorstellen, in der alle Probleme enthalten sind, die nach dem Prinzip der dynamischen Programmierung zu lösen sind und für deren Lösung quadratische Laufzeit benötigt wird. Vielleicht kann man in Zukunft ein Problem der Klasse $\mathbf{P_2}$ auch effizienter lösen und damit der Klasse $\mathbf{L}$ zuordnen. Man kann sich die Klasse $\mathbf{P_3}$ vorstellen, in der alle Probleme enthalten sind, die nach dem Prinzip der dynamischen Programmierung zu lösen sind und für deren Lösung kubische Laufzeit benötigt wird (die Lösungstabelle hat eine dritte Dimension). Auch hier kann es sein, dass für ein Problem dieser Klasse eine effizientere Lösung gefunden wird und sie damit einer leichteren Komplexitätsklasse zugeordnet werden kann. Da ein Problem auch immer weniger effizient, d.h., langsamer, gelöst werden kann, ist es nicht so, dass z.B. ein Problem der Klasse $\mathbf{L}$ auch der Klasse $\mathbf{P_2}$ zuzuordnen ist, da man Probleme in der Praxis nicht langsamer löst. Alle Klassen sind in $\mathbf{P}$ enthalten aber untereinander nicht:
+\subsection{Komplexitätsklassen}
+Algorithmen folgen einem Lösungsprinzip nach dem sie ein Problem lösen. Es gibt zum Beispiel das optimale Teile-und-Herrsche Prinzip oder das Prinzip der dynamischen Programmierung. Es kann sich lohnen, die Klasse $\mathbf{P}$ in Komplexitätsklassen einzuteilen, bei der eine Klasse durch ein Lösungsprinzip und ihre charakteristische Laufzeit beschrieben wird. Zum Beispiel kann man sich die Klasse vorstellen, in der alle Probleme enthalten sind, die nach dem optimalen Teile-und-Herrsche Prinzip zu lösen sind und nicht besser. Da die charakteristische Laufzeit dieser Klasse die logarithmische ist, könnte sie den Namen $\mathbf{L}$ haben. Man kann sich auch die Klasse $\mathbf{P_2}$ vorstellen, in der alle Probleme enthalten sind, die nach dem Prinzip der dynamischen Programmierung zu lösen sind und für deren Lösung quadratische Laufzeit benötigt wird.
+
+\begin{definition}
+	Die Klasse $\mathbf{P}$ enthält die Menge aller Probleme, für die es jeweils einen Algorithmus gibt, der das Problem in polynomieller Laufzeit löst.	
+\end{definition}
+
+\begin{definition}
+	Die Klasse $\mathbf{NP}$ enthält die Menge aller Probleme, von denen bekannt ist, dass es für sie jeweils keinen Algorithmus gibt, der das Problem noch in polynomieller Laufzeit lösen kann.
+\end{definition}
+Bisher hat man vermutet, dass zwischen $\mathbf{P}$ und $\mathbf{NP}$ eine Beziehung derart existiert, dass $\mathbf{P} \subseteq \mathbf{NP}$. Diese Vermutung ist aber nicht richtig.
+\begin{satz}
+	Die Klassen $\mathbf{P}$ und $\mathbf{NP}$ sind gleich, d.h., $\mathbf{P} = \mathbf{NP}$.
+\end{satz}
+\begin{proof}
+	Betrachte das Problem $\mathbf{S}$, die eindeutige Schneeflocke. Gegeben ist eine Schneeflocke mit 5 gleichlangen Armen. Wie wird diese Schneeflocke eindeutig unter allen bereits vorhandenen Schneeflocken? Finde einen Algorithmus, der in polynomieller Zeit immer eine neue Schneeflocke erzeugt. Beweis durch Induktion:\newline
+	IB: Sei $S$ die Menge aller eindeutigen Schneeflocken, o.B.d.A.\newline
+	IA: $|S| = 0$ trivial, $|S| = 1$ trivial\newline
+	IS: $|S| \rightarrow |S| + 1$, $|S| = n, n \in \mathbb{N}$\newline
+	Ziel: Mache aus 8 Knoten wieder 6 Knoten mit gleicher Kantenlänge in polynomieller Zeit. Berechne dazu die Restklasse 6. Jeder Knoten berechnet eine Funktion $f(b_1, \ldots, b_n) = \{0, \ldots, 9\}$, $b_i \in \{0, 1\}$. Bei Hinzufügen zwei neuer Knoten erhöht sich die Wertemenge des vorhandenen Graphen um maximal $18\equiv 0 \mod 6$. \newline
+	Die Vermutung liegt nahe, das Problem $\mathbf{S}$ als NP-vollständig einzuschätzen. Da dieses Problem aber in polynomieller Zeit lösbar ist, ist es echt in $\mathbf{P}$. 
+\end{proof}
+Da $\mathbf{P} = \mathbf{NP}$, lohnt es sich gerade auch die Probleme genauer zu betrachten, von denen man vorher vermutete, dass es für sie keinen Algorithmus gibt, der das Problem in polynomieller Laufzeit lösen kann.
+
+Vielleicht kann man in Zukunft ein Problem der Klasse $\mathbf{P_2}$ auch effizienter lösen und damit der Klasse $\mathbf{L}$ zuordnen. Man kann sich die Klasse $\mathbf{P_3}$ vorstellen, in der alle Probleme enthalten sind, die nach dem Prinzip der dynamischen Programmierung zu lösen sind und für deren Lösung kubische Laufzeit benötigt wird (die Lösungstabelle hat eine dritte Dimension). Auch hier kann es sein, dass für ein Problem dieser Klasse eine effizientere Lösung gefunden wird und sie damit einer leichteren Komplexitätsklasse zugeordnet werden kann. Da ein Problem auch immer weniger effizient, d.h., langsamer, gelöst werden kann, ist es nicht so, dass z.B. ein Problem der Klasse $\mathbf{L}$ auch der Klasse $\mathbf{P_2}$ zuzuordnen ist, da man Probleme in der Praxis nicht langsamer löst. Alle Klassen sind in $\mathbf{P}$ enthalten aber untereinander nicht:
 \begin{align*}
 	\mathbf{L} \subset \mathbf{P}, \quad \mathbf{P_2} \subset \mathbf{P}, \quad \mathbf{P_3} \subset \mathbf{P}, \quad \mathbf{L} \not \subset \mathbf{P_2}, \quad \mathbf{P_2} \not \subset \mathbf{P_3}, \quad \mathbf{L} \not \subset \mathbf{P_3}.
 \end{align*}
 Beispiele für Probleme, die in $\mathbf{L}$ enthalten sind, sind die $n \times n$ Matrixmultiplikation und das Sortieren von ganzen Zahlen. Beide Probleme lassen sich mit dem optimalen Teile-und-Herrsche Prinzip lösen.
+
 \subsection{Experimentelle Ergebnisse}
 Bei der Analyse der zu messenden Laufzeit von Algorithmus \textsc{Strassen-25} ist zu erwarten, dass dieser mit nur 5 Matrixmultiplikationen deutlich weniger Rechenzeit benötigt als der Algorithmus von \textsc{Strassen} mit 7 Matrixmultiplikationen.
 

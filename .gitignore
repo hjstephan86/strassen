@@ -5,3 +5,5 @@ venv/
 *.aux
 *.log
 *.gz
+*.toc
+*.out

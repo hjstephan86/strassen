@@ -369,4 +369,60 @@ Die Wahl des optimalen Algorithmus zur Matrixmultiplikation hängt stark von der
 	
 	\item \textbf{Sehr große Matrizen} ($n \ge 10.000$): Bei großen Matrizen, wie sie in Big Data Analysen oder beim Training umfangreicher Deep-Learning-Modelle auftreten, wird der Bedarf an Alternativen zu optimierten Standardalgorithmen deutlich. Damit gewinnt der Algorithmus von \textsc{Strassen} an Attraktivität und Relevanz für die Bewältigung rechenintensiver Multiplikationen.
 \end{enumerate}
+
+\section{Signalübertragung}
+Für die Signalübertragung ist es wichtig, das Signal vom Sender zum Empfänger sicher zu übertragen. Welche kleinste Einheit eignet sich dabei als die optimale? Bisher betrachtet wurde: Es gibt die 2 zum Teilen beim optimalen Teile-und-Herrsche Prinzip. Es gibt die Exponentialfunktion zur Basis 2. Es gibt die logarithmische Laufzeit. Darüber hinaus gibt es das Binärsystem, bei dem die kleinste Einheit durch 2 Zustände repräsentiert wird.
+\begin{satz}
+	Das Binärsystem ist optimal für die Signalübertragung, bei der elektronische Signale genutzt werden: für an (1) und für aus (0).
+\end{satz}
+\begin{proof}
+	Mit einer 2 Bitfolge können 4 Werte übertragen werden, mit einer 3 Bitfolge können 8 Werte übertragen werden. Die Anzahl der übertragbaren Werte ist exponentiell zur Basis 2 in der Anzahl der Bits in der zu übertragenden Bitfolge. Das heißt, die Anzahl an Bits ist logarithmisch zur Wertigkeit, die übertragbar ist. Warum ist 3 oder 4 als Basis nicht besser? Es ist deshalb nicht besser, da man vom Querschnitt der Leitung aus betrachtet so einen maximalen Abstand zwischen (0) und (1) hat zur sicheren, lesbaren Signalübertragung und Störungen (wie durch Rauschen) so maximal entgegengewirkt wird. In der Mitte des Leitungsquerschnitts ist der Schwerpunkt der Leitung. Nur bei 2 Zuständen (0) und (1) mit gleichem Abstand zum Schwerpunkt der Leitung ist der Abstand aller Signale voneinander (maximal) und zum Schwerpunkt der Leitung (minimal) optimal.	
+\end{proof}
+Das heißt, der Leitungsquerschnitt wird somit so klein wie möglich gehalten und damit ist so wenig Leitungsmaterial wie nötig erforderlich. Es ist aus wirtschaftlicher und fairer Sicht nicht vertretbar, städtische Haushalte mit einem anderen als dem Binärsystem für die Signalübertragung zu versorgen. Zugleich verfügen ländliche Gebiete oft nicht über dieselbe Internetbandbreite wie Städte. Die Debatte um die Nutzung von Quantenphysik für die Signalübertragung erübrigt sich somit unter wirtschaftlichen und gerechten Gesichtspunkten. Solange die Quantenphysik nicht für die Signalübertragung eingesetzt wird, ist auch die Verarbeitung von Signalen bzw. Daten mittels Quantenphysik nicht sinnvoll.
+
+Die \textit{Shannon-Hartley-Gleichung} beschreibt die maximale theoretische Datenrate, d.h., \textit{Kanalkapazität C}, die über einen Kommunikationskanal fehlerfrei übertragen werden kann, unter Berücksichtigung von Bandbreite und Rauschen. Sie lautet:
+\begin{align*}
+	\text{C} = \text{B} \cdot \log_2{\bigg(1+\frac{\text{S}}{\text{N}}\bigg)}, \quad \text{dabei ist}
+\end{align*}
+\begin{enumerate}
+	\item[C] Kanalkapazität in Bit pro Sekunde (bit/s)
+	\item[B] Bandbreite des Kanals in Hertz (Hz)
+	\item[S] Durchschnittliche Signalleistung über den Kanal
+	\item[N] Durchschnittliche Rauschleistung über den Kanal
+	\item[S/N] Signal-Rausch-Verhältnis (SNR)
+\end{enumerate}
+Das Signal-Rausch-Verhältnis (SNR) ist dabei der Quotient aus der durchschnittlichen Leistung zur Signalübertragung und der durchschnittlichen Rauschleistung im Kanal:
+\begin{align*}
+	\text{S}/\text{N} = 10 \cdot \log_{10} \bigg(\frac{\text{P}_{\text{Sign}}}{\text{P}_{\text{Nois}}}\bigg).
+\end{align*}
+Beträgt die Signalleistung zum Beispiel $\text{P}_{\text{Sign}} = 100\text{mW}$ und die Rauschleistung $\text{P}_{\text{Sign}} = 1\text{mW}$, dann ist 
+\begin{align*}
+	\text{S}/\text{N} = 10 \cdot \log_{10} \bigg(\frac{100\text{mW}}{1{\text{mW}}}\bigg) = 20.
+\end{align*}
+Das Signal-Rausch-Verhältnis wird nicht in dB angegeben, da es nur ein Verhältnis beschreibt, in dem zwei Leistungen, die Signalleistung und die Rauschleistung, zueinander stehen. Tabelle \ref{tab:snr} zeigt typische SNR-Wertebereiche. Bei einem SNR, das größer als 40 ist, ist eine optimale Signalübertragung möglich.
+\begin{table}[h!]
+	\centering
+	\caption{Typische SNR-Wertebereiche und deren Bedeutung für die Signalqualität}
+	\label{tab:snr}
+	\begin{tabular}{p{2cm}|p{2.5cm}|p{5cm}|p{4cm}}
+		\hline
+		SNR & Qualitäts-einstufung & Beschreibung / Typische Auswirkungen & Anwendungsbeispiele (Tendenz) \\
+		\hline\hline
+		$< 0$            & Unbrauchbar & Rauschleistung überwiegt Signalleistung deutlich. Keine Kommunikation möglich oder extrem gestört. & Sehr schlechte/keine Mobilfunkverbindung, gestörtes WLAN am Rand. \\
+		\hline
+		$0 - 5$          & Sehr schlecht & Signal kaum von Rauschen zu unterscheiden. Häufige Abbrüche, extrem langsame/unzuverlässige Datenübertragung. & Schwaches WLAN, sehr schlechter Radioempfang. \\
+		\hline
+		$5 - 10$         & Schlecht & Verbindung instabil, Störungen. Datenraten stark eingeschränkt, viele Wiederholungen nötig. & Grundlegende Internetnutzung (E-Mails), VoIP mit Aussetzern. \\
+		\hline
+		$10 - 15$        & Akzeptabel & Brauchbare Verbindung. Leichte Qualitätseinbußen, gelegentliche Verzögerungen. Für Grundaufgaben ausreichend. & Web-Browse, normale Videoanrufe, nicht-kritisches Streaming. \\
+		\hline
+		$15 - 25$        & Gut & Stabile, zuverlässige Verbindung mit guter Qualität. Für die meisten Anwendungen ausreichend. & HD-Streaming, Online-Gaming (Casual), allgemeine Netzwerkaktivitäten. \\
+		\hline
+		$25 - 40$        & Sehr Gut & Exzellente Bedingungen, kaum Störeinflüsse. Hohe Datenraten und sehr stabile Verbindungen. & 4K-Streaming, anspruchsvolles Online-Gaming, professionelle Audio/Video, Unternehmensnetzwerke. \\
+		\hline
+		$> 40$           & Optimal & Außergewöhnlich klare, störungsfreie Signale. Ideal für kritische Anwendungen, höchste Signalintegrität. & Hochpräzise Messsysteme, Laborequipment, Spezialanwendungen. \\
+		\hline
+	\end{tabular}
+\end{table}
+Hochpräzise Messsysteme und Spezialanwendungen nutzen dieses Verhältnis. Bei einem SNR, das zwischen 25 und 40 liegt, ist die Qualität für die Signalübertragung sehr gut und ermöglicht z.B. 4K-Streaming. Bei einem SNR zwischen 10 und 15 ist die Qualität akzeptabel für normale Videoanrufe oder nicht-kritisches Streaming.
 \end{document}

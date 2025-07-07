@@ -11,18 +11,14 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{algorithm}
-\usepackage{algpseudocode}
+\usepackage[noend]{algpseudocode}
 
 \usepackage[colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
-% Optionale Optionen:
-%   colorlinks=true: Macht die Links farbig statt nur einen Rahmen darum zu legen.
-%   linkcolor=blue: Farbe für interne Links (z.B. von \ref zu \label)
-%   citecolor=green: Farbe für Zitate (wenn du BibTeX/BibLaTeX nutzt)
-%   urlcolor=cyan: Farbe für URLs (wenn du \url{} nutzt)
 
 \newtheorem{satz}{Satz}[section]
 \newtheorem{lemma}{Lemma}[section]
 \newtheorem{definition}{Definiton}[section]
+\numberwithin{equation}{section}
 
 \makeatletter
 \renewcommand{\ALG@name}{Algorithmus}
@@ -85,8 +81,7 @@ Es folgt der Algorithmus \ref{alg:strassen} von \textsc{Strassen}  als Pseudocod
 	\begin{algorithmic}[1]
 		\Require $\langle A, B \rangle$, mit $n \times n$ Matrizen $A$, $B$, $n = 2^k$, $k \in \mathbb{N}$
 		\Ensure $\langle C \rangle$, mit Produktmatrix $C = AB$
-		\If{$n = 1$} $C = AB$ %\Comment{Skalarmultiplikation}
-		\State \textbf{return} $C$
+		\If{$n = 1$} \textbf{return} $C = AB$
 		\EndIf
 		%\Comment{Matrizen in $n/2 \times n/2$ Blöcke unterteilen}
 		\State $A = \begin{pmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{pmatrix}$
@@ -107,7 +102,7 @@ Es folgt der Algorithmus \ref{alg:strassen} von \textsc{Strassen}  als Pseudocod
 		\State \textbf{return} $C = \begin{pmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \end{pmatrix}$
 	\end{algorithmic}
 \end{algorithm}
-Zu Beginn prüfen wir, ob die Größe der Matrizen bereits den Wert $1$ hat. Haben die Matrizen den Wert $1$, geben wir das Produkt $A B$ zurück. In Zeile 4 und 5 werden die Matrizen $A$ und $B$ so definiert, dass in den Zeilen 6 bis 12 die 7 Matrixmultiplikationen jeweils durchgeführt werden. In den Zeilen 13 bis 16 werden 4 Matrizen $C_{ij}$ durch Addition und Subtraktion der Matrizen $A_{ij}$ berechnet und in Zeile 17 Matrix $C$ als Ergebnis zurückgegeben.
+Zu Beginn prüfen wir, ob die Größe der Matrizen bereits den Wert $1$ hat. Haben die Matrizen den Wert $1$, geben wir das Produkt $A B$ zurück. In Zeile 2 und 3 werden die Matrizen $A$ und $B$ so definiert, dass in den Zeilen 4 bis 10 die 5 Matrixmultiplikationen jeweils durchgeführt werden. In den Zeilen 11 bis 14 werden 4 Matrizen $C_{ij}$ durch Addition und Subtraktion der Matrizen $A_{ij}$ berechnet und in Zeile 15 Matrix $C$ als Ergebnis zurückgegeben.
 
 Als Idee zum Beweis der Korrektheit betrachten wir das Produkt $A \cdot B$ der zwei Matrizen $A$ und $B$ mit
 \begin{align*}
@@ -256,7 +251,7 @@ Da nur 5 Matrixmultiplikationen verwendet werden, ergibt sich für die Laufzeita
 	\vphantom{\rule{0pt}{2.5ex}} = n^{\log_{2}5} \: T(1) + cn^2 \frac{\left(\tfrac{5}{4}\right)^{\log_{2}n} - 1}{\tfrac{5}{4} - 1}
 	\vphantom{\rule{0pt}{2.5ex}} = O\left(n^{2.3219}\right).
 \end{align*}
-Dazu wird der Algorithmus von \textsc{Strassen} zu \textsc{Strassen-25} so geändert, dass $P_2$ und $P_5$ in Zeile 11 und 12 ermittelt werden. Damit $P_2$ und $P_5$ ermittelt werden können, müssen die zuvor ermittelten Produkte $P_r$, $r \in \{1, 6, 7\}$ verwendet werden. Das bedeutet für 
+Dazu wird der Algorithmus von \textsc{Strassen} zu \textsc{Strassen-25} so geändert, dass $P_2$ und $P_5$ in Zeile 9 und 10 ermittelt werden. Damit $P_2$ und $P_5$ ermittelt werden können, müssen die zuvor ermittelten Produkte $P_r$, $r \in \{1, 6, 7\}$ verwendet werden. Das bedeutet für 
 \begin{align*}
 	P_2 &= P_6 + P_1 - A_{21}B_{12} + A_{11}B_{12} - A_{11}B_{22} + A_{11}B_{12}, \\
 	P_5 &= P_1 + P_7 - A_{11}B_{11} - A_{22}B_{11} - A_{21}B_{21} + A_{22}B_{21}.
@@ -268,8 +263,7 @@ Dabei ist $P_2$ \textit{abhängig} von $P_6$ und $P_7$ und $P_5$ ist \textit{abh
 	\begin{algorithmic}[1]
 		\Require $\langle A, B \rangle$, mit $n \times n$ Matrizen $A$, $B$, $n = 2^k$, $k \in \mathbb{N}$
 		\Ensure $\langle C, A_{ij}, B_{ij} \rangle$, mit Produktmatrix $C = AB$ und $A_{ij}$, $B_{ij}$
-		\If{$n = 1$} $C = AB$ %\Comment{Skalarmultiplikation}
-		\State \textbf{return} $C$
+		\If{$n = 1$} \textbf{return} $C = AB$
 		\EndIf
 		%\Comment{Matrizen in $n/2 \times n/2$ Blöcke unterteilen}
 		\State $A = \begin{pmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{pmatrix}$
@@ -458,4 +452,156 @@ Das Signal-Rausch-Verhältnis wird nicht in dB angegeben, da es nur ein Verhält
 	\end{tabular}
 \end{table}
 Hochpräzise Messsysteme und Spezialanwendungen nutzen dieses Verhältnis. Bei einem SNR, das zwischen 25 und 40 liegt, ist die Qualität für die Signalübertragung sehr gut und ermöglicht z.B. 4K-Streaming. Bei einem SNR zwischen 10 und 15 ist die Qualität akzeptabel für normale Videoanrufe oder nicht-kritisches Streaming.
+
+\section{Der BMM-Witnesses-Algorithmus: Wege finden in Graphen}
+Mit dem Algorithmus von \textsc{Strassen-25} lassen sich $n \times n$ Matrizen effizient multiplizieren. Matrizen sind nicht nur für arithmetische Berechnungen nützlich; sie spielen auch eine zentrale Rolle in der Graphentheorie. Insbesondere können damit Fragen zur Erreichbarkeit in Graphen beantworten. Man kann sich vorstellen, man hat eine Karte (einen Graphen) und möchten wissen, ob man von Punkt A nach Punkt B gelangen kann. Der BMM-Witnesses-Algorithmus (Boolean Matrix Multiplication with Witnesses) hilft dabei, solche Verbindungen zu finden und sogar zu identifizieren, über welchen Zwischenpunkt eine solche Verbindung verläuft.
+
+Im Gegensatz zur üblichen Matrixmultiplikation, bei der wir Produkte addieren, verwenden wir hier logische Operationen. Anstelle der Multiplikation ($\times$) wird die logische AND-Operation ($\land$) und anstelle der Addition (+) die logische OR-Operation ($\lor$) genutzt. Die Elemente der Matrizen sind dabei binäre Werte, also entweder 0 (aus) oder 1 (an).
+
+Seien $A$ und $B$ zwei $n \times n$ Boolesche Matrizen. Das Produkt $C = A \cdot B$ ist dann eine $n \times n$ Matrix, wobei jedes Element $C_{ij}$ wie folgt berechnet wird:
+\begin{equation}
+	\label{formula:bmm}
+	C_{ij} = \bigvee_{k=1}^{n} (A_{ik} \land B_{kj}).
+\end{equation}
+Ein Wert $C_{ij} = 1$ bedeutet, dass es einen Pfad von Knoten $i$ zu Knoten $j$ der Länge 2 gibt. Das liegt daran, dass $A_{ik} = 1$ bedeutet, es gibt eine Kante von $i$ nach $k$, und $B_{kj} = 1$ bedeutet, es gibt eine Kante von $k$ nach $j$. Wenn beides wahr ist ($A_{ik} \land B_{kj} = 1$), dann existiert ein Pfad von $i \to k \to j$. Die OR-Operation ($\bigvee$) sorgt dafür, dass $C_{ij} = 1$ ist, wenn es mindestens einen solchen Zwischenknoten $k$ gibt.
+
+\subsection{Die Rolle des "Witness" (Zeugen)}
+Der BMM-Witnesses-Algorithmus geht über die reine Feststellung der Erreichbarkeit hinaus. Er liefert zusätzlich einen \textit{Zeugen} für jede gefundene Verbindung. Ein Zeuge für einen Pfad $i \to k \to j$ ist der Zwischenknoten $k$. Der Algorithmus erstellt eine dritte Matrix, die \textit{Witness-Matrix} $W$, in der $W_{ij}$ den Index des ersten gefundenen Zwischenknotens $k$ speichert, für den $A_{ik} \land B_{kj} = 1$ ist. Wenn kein solcher Pfad existiert ($C_{ij} = 0$), dann ist $W_{ij} = 0$.
+
+Dies ist besonders nützlich, um nicht nur zu wissen, ob ein Pfad existiert, sondern auch wie man dorthin gelangt. Im Kontext von Graphen kann man so die direkten Nachfolger auf einem 2-Schritt-Pfad identifizieren. Der Algorithmus zur Berechnung des Booleschen Matrixprodukts $C$ und der Witness-Matrix $W$ ist relativ einfach und ähnelt der Standard-Matrixmultiplikation, nur mit angepassten Operationen.
+
+\begin{algorithm}
+	\caption{BMM-Witnesses$(A, B)$}
+	\label{alg:bmm_witnesses}
+	\begin{algorithmic}[1]
+		\Require $\langle A, B \rangle$, mit $n \times m$ Matrix $A$ und $m \times p$ Matrix $B$. Die Elemente sind 0 oder 1.
+		\Ensure $\langle C, W \rangle$, mit Produktmatrix $C$ ($n \times p$) und Witness-Matrix $W$ ($n \times p$)
+		
+		\State Initialisiere $C$ als $n \times p$ Matrix mit Nullen
+		\State Initialisiere $W$ als $n \times p$ Matrix mit Nullen
+		
+		\For{$i = 1$ \textbf{to} $n$}
+		\For{$j = 1$ \textbf{to} $p$}
+		\For{$k = 1$ \textbf{to} $m$}
+		\If{$A_{ik} = 1 \land B_{kj} = 1$}
+		\State $C_{ij} = 1$
+		\If{$W_{ij} = 0$} \Comment{Speichere den ersten gefundenen Zeugen}
+		\State $W_{ij} = k+1$ \Comment{Oft $k+1$ um 0 als \textit{kein Zeuge} zu nutzen}
+		\EndIf
+		\EndIf
+		\EndFor
+		\EndFor
+		\EndFor
+		\State \textbf{return} $\langle C, W \rangle$
+	\end{algorithmic}
+\end{algorithm}
+
+Der Algorithmus durchläuft alle möglichen Tripel $(i, j, k)$. Wenn eine Kante von $i$ nach $k$ und eine Kante von $k$ nach $j$ existiert ($A_{ik}=1$ und $B_{kj}=1$), dann wird $C_{ij}$ auf 1 gesetzt. Gleichzeitig wird der Index $k$ (hier als $k+1$ gespeichert, um 0 als Default-Wert für "kein Zeuge" zu reservieren) in $W_{ij}$ eingetragen, sofern noch kein Zeuge für diese Position gefunden wurde. Die Laufzeit dieses Algorithmus ist $O(n \cdot m \cdot p)$, also $O(n^3)$ für quadratische Matrizen, ähnlich der Standard-Matrixmultiplikation.
+
+Der BMM-Witnesses-Algorithmus findet breite Anwendung in Bereichen wie:
+\begin{itemize}
+	\item[-] Graphentheorie: Bestimmung der Transitivität (Existenz von Pfaden) in Graphen und Auffinden von Gliedern in diesen Pfaden.
+	\item[-] Soziale Netzwerkanalyse: Identifizierung von Personen, die indirekt miteinander verbunden sind, und über welche gemeinsamen Kontakte diese Verbindung zustande kommt.
+	\item[-] Routenplanung: In einfachen Fällen kann er helfen, Zwischenstationen auf Routen zu finden.
+	\item[-] Datenbanken: Abfragen von indirekten Beziehungen zwischen Entitäten.
+\end{itemize}
+
+Während \textsc{Strassens} Algorithmus die Laufzeit für die arithmetische Matrixmultiplikation verbessert, ist der BMM-Witnesses-Algorithmus ein fundamentales Werkzeug, das die Mächtigkeit von Matrizen für logische Schlussfolgerungen und die Analyse von Beziehungen in komplexen Netzwerken demonstriert.
+
+\subsection{Zeugen für Boolesche Matrixmultiplikation}
+
+Seien $A$ und $B$ zwei $n \times n$ Boolesche Matrizen, deren Einträge entweder 0 oder 1 sind. Das Boolesche Produkt $P$ von $A$ und $B$ ist eine Matrix, deren Einträge $p_{ij}$ wie folgt definiert sind:
+$$p_{ij}=\bigvee_{k=1}^{n}(a_{ik}\wedge b_{kj}).$$
+Hierbei repräsentieren $\bigvee$ und $\wedge$ die Booleschen Operatoren ODER und UND. Dies bedeutet, dass $p_{ij}=1$ genau dann ist, wenn es mindestens ein $k$ gibt, für das sowohl $a_{ik}=1$ als auch $b_{kj}=1$ gilt.
+
+\subsubsection{Berechnung des Booleschen Produkts}
+Das Boolesche Produkt $P=AB$ kann effizient berechnet werden. Man kann die 0/1-Einträge als ganze Zahlen behandeln und ein herkömmliches Matrixprodukt $M$ (mit ganzen Zahlen) berechnen. Dann ist $p_{ij}=1$ genau dann, wenn der entsprechende Eintrag $m_{ij}$ in der Matrix $M$ größer als 0 ist. Die Zeitkomplexität für diese Berechnung liegt bei $O(M(n))$, wobei $M(n)$ die Zeit ist, die zur Multiplikation zweier $n \times n$ Matrizen benötigt wird, was wiederum $o(n^3)$ ist, wenn man Strassens Algorithmus oder schnellere Methoden verwendet.
+
+\subsubsection{Die Notwendigkeit von Zeugen}
+In einigen Anwendungen ist es nicht ausreichend zu wissen, dass $p_{ij}=1$. Man möchte zusätzlich einen Index $k$ finden, für den $a_{ik}=1$ und $b_{kj}=1$ gilt. Dieser Index $k$ wird als \textit{Zeuge} bezeichnet. Eine Zeugenmatrix $W$ für $P=AB$ ist eine Matrix, deren Einträge $w_{ij}$ wie folgt definiert sind:
+$$w_{ij}=\begin{cases} 0 & \text{falls } p_{ij}=0 \\ k \text{ mit } a_{ik}=b_{kj}=1 & \text{falls } p_{ij}=1 \end{cases}$$
+Die Schwierigkeit besteht darin, eine solche Zeugenmatrix in subkubischer Zeit zu berechnen, da ein naiver Ansatz, der jedes $k$ für jedes Paar $(i, j)$ überprüft, zu einer Laufzeit von $O(n^3)$ führen würde.
+
+\subsubsection{Ansatz bei eindeutigem Zeugen}
+Angenommen, für ein Paar $(i, j)$ mit $p_{ij}=1$ gibt es einen eindeutigen Zeugen $k_{ij}$. In diesem speziellen Fall könnte man eine modifizierte Matrix $\hat{A}$ definieren, indem man $\hat{a}_{ik} = k \cdot a_{ik}$ setzt. Das $(i, j)$-Element des Produkts $\hat{A}B$ wäre dann $k_{ij}$, also der korrekte Zeuge. Wenn der Zeuge jedoch nicht eindeutig ist, würde der Eintrag im Produkt $\hat{A}B$ "Müll" enthalten, und man könnte den Index nicht direkt bestimmen. Ein einfacher Ansatz, $\hat{a}_{ik}=2^k a_{ik}$ zu verwenden, um alle Zeugen zu identifizieren, würde zu Problemen mit der Größe der Zahlen führen, da dann $n$-Bit-Zahlen verwendet würden und die Annahme von $O(1)$ Zeit für Ganzzahloperationen nicht mehr gültig wäre.
+
+\subsubsection{Randomisierter Ansatz für allgemeine Zeugen}
+Eine allgemeine Lösung für das Finden von Zeugen kann mithilfe von Randomisierung erreicht werden. Sei $w_{ij}$ die Anzahl der Zeugen für $p_{ij}=1$. Wir definieren eine modifizierte Matrix $\hat{A}$ mit $\hat{a}_{ik} = r_k \cdot a_{ik}$, wobei $r_k$ eine Zufallsvariable ist. Genauer gesagt, $r_k=1$ mit einer Wahrscheinlichkeit $\pi$ und $r_k=0$ mit Wahrscheinlichkeit $1-\pi$. Die Wahrscheinlichkeit $\pi$ wird so gewählt, dass $1/(2w_{ij}) \le \pi < 1/w_{ij}$ ist.
+
+\subsubsection{Wahrscheinlichkeit eines Zeugen}
+Der Kern des randomisierten Ansatzes ist die Behauptung, dass die Wahrscheinlichkeit, dass die Summe $\sum_{k=1}^{n} \hat{a}_{ik} b_{kj}$ ein Zeuge für $p_{ij}=1$ ist, mindestens $1/(2e)$ beträgt, wobei $e$ die Eulersche Zahl ist. Dies kann wie folgt bewiesen werden: Angenommen, es gibt $w$ "weiße Kugeln" (Zeugen) und $n-w$ "schwarze Kugeln" (keine Zeugen). Wenn jede der $n$ Kugeln unabhängig voneinander mit Wahrscheinlichkeit $\pi$ ausgewählt wird, ist die Wahrscheinlichkeit $\rho$, dass genau eine weiße Kugel gewählt wird, gegeben durch:
+$$\rho = w \cdot \pi \cdot (1-\pi)^{w-1}$$
+Unter Verwendung der Grenzen für $\pi$ erhalten wir für $w > 1$: $\rho > (1/2)(1-1/w)^{w-1} \ge 1/(2e)$. Für $w=1$ gilt $\rho \ge 1/(2e)$ ebenfalls.
+
+\subsubsection{Wiederholung des Experiments}
+Ein einzelnes Experiment, das mit Wahrscheinlichkeit $\ge 1/(2e)$ einen Zeugen liefert, ist möglicherweise nicht ausreichend. Durch mehrfache Wiederholung des "Experiments" kann die Wahrscheinlichkeit, genau einen Zeugen zu erhalten, erhöht werden. Bei $N$ Versuchen ist die Wahrscheinlichkeit des Scheiterns in allen Versuchen kleiner als $(1-1/(2e))^N \le e^{-N/(2e)}$. Wählt man $N = 2ec \log n$, so ist die Fehlerwahrscheinlichkeit kleiner als $1/n^c$. Dies bedeutet, dass nur für wenige Einträge $(i, j)$ ein Zeuge nicht gefunden wird.
+
+Da $w_{ij}$ für jedes $(i, j)$ unterschiedlich sein kann und uns nicht bekannt ist, versucht der Algorithmus verschiedene Wahrscheinlichkeiten $\pi_s = 1/2^s$ für $s = 0, \ldots, \lceil \log n \rceil$. Dies wird erreicht, indem man ein Startset $R = \{1, \ldots, n\}$ hat und iterativ ein (1/2)-Sample aus $R$ zieht, wobei jedes Element unabhängig mit Wahrscheinlichkeit 1/2 ausgewählt wird. Im $i$-ten Iterationsschritt ist $k$ dann mit Wahrscheinlichkeit $1/2^i$ in $R$.
+
+\subsubsection{Algorithmus BMM-WITNESS}
+Der Algorithmus \texttt{BMM-WITNESS} findet Zeugen für die Boolesche Matrixmultiplikation:
+
+\begin{algorithm}
+	\caption{BMM-WITNESS(A, B)}
+	\begin{algorithmic}[1]
+		\State $W \gets \text{AB}$ \Comment{Initialisiere W (mit negativen Werten für fehlende Zeugen)}
+		\For{$t \gets 1 \to 2ec \log n$}
+		\State $R \gets \{1, \ldots, n\}$
+		\For{$s \gets 0 \to \lceil \log n \rceil$}
+		\State Compute $A^R$: $a_{ik}^R \gets [k \in R] \cdot k \cdot a_{ik}$ \Comment{$[k \in R]$ ist ein Indikator, 1 falls $k \in R$}
+		\State $Z \gets A^R B$
+		\For{all $i, j$}
+		\If{$W_{ij} < 0$ AND $Z_{ij}$ is a witness} \Comment{Überprüfe, ob $a_{i,Z_{ij}}=1$ und $b_{Z_{ij},j}=1$}
+		\State $W_{ij} \gets Z_{ij}$
+		\EndIf
+		\EndFor
+		\State $R \gets \text{(1/2)-sample from R}$ \Comment{Jedes Element in R wird mit Wahrscheinlichkeit 1/2 ausgewählt}
+		\EndFor
+		\EndFor
+		\For{all $i, j$}
+		\If{$W_{ij} < 0$}
+		\State Finde Zeugen für $i, j$ mittels Brute Force \Comment{Überprüfe jedes $k$, Zeit $O(n)$ pro Paar}
+		\EndIf
+		\EndFor
+		\Return $W$
+	\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Laufzeitanalyse}
+Die Schleife in den Zeilen 4-10 gewährleistet, dass für jedes Paar $(i, j)$ eine Wahrscheinlichkeit nahe $1/w_{ij}$ ausprobiert wird. Dies geschieht $2ec \log n$ Mal, sodass die Wahrscheinlichkeit, einen Zeugen in dieser Schleife nicht zu finden, höchstens $1/n^c$ beträgt. Da es $n^2$ Paare $(i, j)$ gibt, ist die erwartete Anzahl fehlgeschlagener Paare höchstens $1/n^{c-2}$. Setzt man $c=1$, ist dies höchstens $n$, und die erwartete Zeit der Schleife in Zeile 11-13 (Brute Force) beträgt höchstens $O(n^2)$. Die dominierende Operation in der Schleife 4-10 ist die Matrixmultiplikation in Zeile 6. Daher beträgt die erwartete Gesamtlaufzeit $O(M(n) \log^2 n)$. Die Korrektheit des Algorithmus wird dadurch sichergestellt, dass Zeugen nur dann gesetzt werden, wenn sie direkt überprüft wurden.
+
+\subsection{Nachfolger für kürzeste Pfade}
+
+\subsubsection{Anwendung von Boolescher Matrixmultiplikation}
+Wir nutzen nun die Techniken der Zeugensuche für die Boolesche Matrixmultiplikation, um eine Nachfolgermarix $S$ für das All-Paar-kürzeste-Pfade-Problem (APSP) zu erhalten. Für ein Paar von Knoten $(i, j)$ ist ein Knoten $s$ ein Nachfolger von $i$ auf einem kürzesten Pfad von $i$ nach $j$ genau dann, wenn die Distanz von $s$ nach $j$ genau eins kleiner ist als die Distanz von $i$ nach $j$, also $d_{sj} = d_{ij}-1$.
+
+\subsubsection{Herausforderung bei der Definition von F}
+Intuitiv könnte man eine Boolesche Matrix $F$ definieren, wobei $f_{sj}=1$ ist, wenn $d_{sj}=d_{ij}-1$. Dann könnte ein Nachfolger für $(i, j)$ als der $(i, j)$-Eintrag einer Zeugenmatrix für das Boolesche Produkt $AF$ gefunden werden. Das Problem hierbei ist jedoch, dass die Definition von $d_{sj}$ von $i$ abhängt, was bedeuten würde, dass wir alle $n$ Möglichkeiten durchprobieren müssten, was ineffizient wäre.
+
+\subsubsection{Lösung mittels Modulo-3-Arithmetik}
+Glücklicherweise kann man das Problem vereinfachen, indem man nur die Distanzen modulo 3 unterscheidet. Genauer gesagt, es ist ausreichend, drei verschiedene Matrizen $F^{(c)}$ für $c=0, 1, 2$ zu definieren:
+$$f_{sj}^{(c)}=1 \quad \text{falls} \quad d_{sj} \equiv (c-1) \pmod 3$$
+Obwohl diese Definition immer noch von $i$ abhängt, gibt es nur drei verschiedene Fälle, was die Berechnung vereinfacht.
+
+\subsubsection{Algorithmus MM-APSP}
+Der Algorithmus \texttt{MM-APSP} zur Berechnung der Nachfolgermarix für kürzeste Pfade ist wie folgt strukturiert:
+
+\begin{algorithm}
+	\caption{MM-APSP(A)}
+	\begin{algorithmic}[1]
+		\State $D \gets \text{MM-APSD}(A)$ \Comment{Berechne alle kürzesten Distanzen}
+		\For{$c \gets 0, 1, 2$}
+		\State Definiere $F^{(c)}$: $f_{sj}^{(c)}=1$ falls $d_{sj} \equiv (c-1) \pmod 3$
+		\State $W^{(c)} \gets \text{BMM-WITNESS}(A, F^{(c)})$ \Comment{Verwende den Algorithmus aus VI.4}
+		\EndFor
+		\State Initialisiere $S$ als $n \times n$ Matrix
+		\For{all $i, j$}
+		\State $s_{ij} \gets w_{ij}^{(d_{ij} \pmod 3)}$ \Comment{Wähle den Zeugen aus der passenden $W^{(c)}$ Matrix}
+		\EndFor
+		\Return $S$
+	\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Laufzeitanalyse}
+Der Algorithmus \texttt{MM-APSD(A)} (All-Paar-kürzeste-Distanzen für Einheitsgewichte) hat eine Laufzeit von $O(M(n) \log n)$. Der Hauptteil des \texttt{MM-APSP}-Algorithmus beinhaltet drei Aufrufe von \texttt{BMM-WITNESS}, einmal für jedes $c \in \{0, 1, 2\}$. Jeder Aufruf von \texttt{BMM-WITNESS} hat eine erwartete Laufzeit von $O(M(n) \log^2 n)$. Daher ist die erwartete Gesamtlaufzeit des \texttt{MM-APSP}-Algorithmus $O(M(n) \log^2 n)$.
 \end{document}

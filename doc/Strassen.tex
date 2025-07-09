@@ -455,7 +455,7 @@ Das Signal-Rausch-Verhältnis wird nicht in dB angegeben, da es nur ein Verhält
 \end{table}
 Hochpräzise Messsysteme und Spezialanwendungen nutzen dieses Verhältnis. Bei einem SNR, das zwischen 25 und 40 liegt, ist die Qualität für die Signalübertragung sehr gut und ermöglicht z.B. 4K-Streaming. Bei einem SNR zwischen 10 und 15 ist die Qualität akzeptabel für normale Videoanrufe oder nicht-kritisches Streaming.
 
-\section{Der Algorithmus BMM-Witness: Wege finden in Graphen}
+\section{Der Algorithmus MM-APSP}
 Mit dem Algorithmus von \textsc{Strassen-25} lassen sich $n \times n$ Matrizen effizient multiplizieren. Betrachte die beiden Booleschen $n \times n$ Matrizen $A$ und $B$, deren Einträge entweder 0 oder 1 sind. Das Boolesche Produkt $P$ von $A$ und $B$ ist eine Matrix, deren Einträge $p_{ij}$ wie folgt definiert sind:
 $$p_{ij}=\bigvee_{k=1}^{n}(a_{ik}\wedge b_{kj}).$$
 Hierbei repräsentieren $\bigvee$ und $\wedge$ die Booleschen Operatoren ODER und UND. Dies bedeutet, dass $p_{ij}=1$ genau dann ist, wenn es mindestens ein $k$ gibt, für das sowohl $a_{ik}=1$ als auch $b_{kj}=1$ gilt.
@@ -512,7 +512,7 @@ Ein einzelnes Experiment, das mit Wahrscheinlichkeit $\ge 1/(2e)$ einen Zeugen l
 
 Da $w_{ij}$ für jedes $(i, j)$ unterschiedlich sein kann und uns nicht bekannt ist, versucht der Algorithmus verschiedene Wahrscheinlichkeiten $\pi_s = 1/2^s$ für $s = 0, \ldots, \lceil \log n \rceil$. Dies wird erreicht, indem man ein Startset $R = \{1, \ldots, n\}$ hat und iterativ ein (1/2)-Sample aus $R$ zieht, wobei jedes Element unabhängig mit Wahrscheinlichkeit 1/2 ausgewählt wird. Im $i$-ten Iterationsschritt ist $k$ dann mit Wahrscheinlichkeit $1/2^i$ in $R$. Dass mit wachsendem $i$ die Menge $R$ kleiner wird, ist  gleich wichtig in der Laufzeitanalyse und damit für die Effizienz des Algorithmus, d.h., für seine \textit{erwartete Laufzeit}.
 \begin{algorithm}
-	\caption{BMM-Witness(A, B)}
+	\caption{BMM-Witness($A$, $B$)}
 	\label{alg:bmm_witness_rand}
 	\begin{algorithmic}[1]
 		\Require $\langle A, B \rangle$ mit $n \times m$ Matrix $A$ und $m \times p$ Matrix $B$
@@ -547,14 +547,18 @@ Wir nutzen nun die Techniken der Zeugensuche für die Boolesche Matrixmultiplika
 
 Intuitiv könnte man eine Boolesche Matrix $F$ definieren, wobei $f_{sj}=1$ ist, wenn $d_{sj}=d_{ij}-1$. Dann könnte ein Nachfolger für $(i, j)$ als der $(i, j)$-Eintrag einer Zeugenmatrix für das Boolesche Produkt $AF$ gefunden werden. Das Problem hierbei ist jedoch, dass die Definition von $d_{sj}$ von $i$ abhängt, was bedeuten würde, dass wir alle $n$ Möglichkeiten durchprobieren müssten, was ineffizient wäre.
 
-Das Problem lässt sich vereinfachen, indem nur die Distanzen modulo 3 unterschieden werden. Genauer gesagt, es ist ausreichend, drei verschiedene Matrizen $F^{(c)}$ für $c=0, 1, 2$ zu definieren:
-$$f_{sj}^{(c)}=1, \quad \text{falls } d_{sj} \equiv_3 (c-1).$$
-Obwohl diese Definition immer noch von $i$ abhängt, gibt es nur drei verschiedene Fälle, was die Berechnung vereinfacht. Der Algorithmus MM-APSP erhält als Eingabe eine $n \times n$ Matrix $A$ und berechnet dazu die Nachfolgermatrix $S$ für kürzeste Pfade.
+Das Problem lässt sich vereinfachen, indem nur die Distanzen modulo 3 unterschieden werden. Jeder Pfad einer jeden Länge im Graphen wird mit der Restklasse modulo 3 in den Matrizen $F^{(c)}$, $c = 0, 1, 2$, abgebildet, wobei $f_{sj}^{(c)}=1$, falls $d_{sj} \equiv_3 (c-1)$. Das heißt
+\begin{align*}
+	F^{(0)} & \text{enthält alle Pfade der Länge } 0, 3, 6, \ldots, \\
+	F^{(1)} & \text{enthält alle Pfade der Länge } 1, 4, 7, \ldots, \\
+	F^{(2)} & \text{enthält alle Pfade der Länge } 2, 5, 8, \ldots.
+\end{align*}
+Der Algorithmus MM-APSP erhält als Eingabe eine $n \times n$ Matrix $A$ und berechnet dazu die Nachfolgermatrix $S$ für kürzeste Pfade.
 \begin{algorithm}
-	\caption{MM-APSP(A)}
+	\caption{MM-APSP($A$)}
 	\begin{algorithmic}[1]
 		\Require $\langle A \rangle$ mit $n \times n$ Matrix $A$
-		\Ensure $\langle S \rangle$ mit $n \times n$ Successor Matrix $S$
+		\Ensure $\langle S \rangle$ mit $n \times n$ Nachfolgermatrix $S$
 		\State $D = \text{MM-APSD}(A)$ \Comment{Berechne alle kürzesten Distanzen}
 		\For{$c = 0, 1, 2$}
 		\State Definiere $F^{(c)}$: $f_{sj}^{(c)}=1$ falls $d_{sj} \equiv_3 (c-1)$
@@ -567,8 +571,107 @@ Obwohl diese Definition immer noch von $i$ abhängt, gibt es nur drei verschiede
 		\State \Return $S$
 	\end{algorithmic}
 \end{algorithm}
-
-Der Algorithmus MM-APSD hat eine Laufzeit von $O(M(n) \log n)$. Der Hauptteil des Algorithmus beinhaltet drei Aufrufe von BMM-Witness, einmal für jedes $c \in \{0, 1, 2\}$. Jeder Aufruf von BMM-Witness hat eine erwartete Laufzeit von $O(M(n) \log^2 n)$. Daher ist die erwartete Gesamtlaufzeit des Algorithmus MM-APSP $O(M(n) \log^2 n) = O(n^{2.3219} \log^2 n)$, wenn \textsc{Strassen-25} für die Matrixmultiplikation verwendet wird.
+Der Algorithmus MM-APSD hat eine Laufzeit von $O(M(n) \log n)$. In Zeile 1 wird Algorithmus MM-APSD($A$) aufgerufen, der für die Adjazenzmatrix $A$ die kürzesten Distanzen für alle $(i, j)$ in $O(M(n) \log(n))$ ermittelt. Der Hauptteil des Algorithmus beinhaltet drei Aufrufe von BMM-Witness, einmal für jedes $c \in \{0, 1, 2\}$. Jeder Aufruf von BMM-Witness hat eine erwartete Laufzeit von $O(M(n) \log^2 n)$. Daher ist die erwartete Gesamtlaufzeit des Algorithmus MM-APSP $O(M(n) \log^2 n) = O(n^{2.3219} \log^2 n)$, wenn \textsc{Strassen-25} für die Matrixmultiplikation verwendet wird.
 
 Betrachtet man die notwendigen Operationen für Matrixmultiplikation aus Tabelle \ref{tab:operations-comparison}, hat MM-APSP für $n = 1000$ eine erwartete Anzahl von notwendigen Operationen von etwa $10^9 \cdot 99.32$, da $\log^2(10^3) \approx 99.32$, und für $n = 10^6$ eine erwartete Anzahl von notwendigen Operationen von etwa $10^{13} \cdot 397.27$, da $\log^2(10^{6}) \approx 397.27$.
+
+\subsection{Beispiel}
+Gegeben sei $G = (V, E)$ mit $V = \{1, 2, 3, 4\}$ und $E = \{(1, 2), (1, 4), (2, 3), (2, 4), (4, 3)\}$ und der Adjazenzmatrix $A$ mit $a_{ij} = 1$ genau dann, wenn $(i,j) \in E$.\newline
+\begin{minipage}[t]{0.45\textwidth}
+	\centering
+	\vspace{0.01cm} % Erhöhter Abstand vor der Überschrift
+	\resizebox{0.75\textwidth}{!}{		
+		\begin{tikzpicture}[
+			node distance=2.5cm,
+			every node/.style={circle, draw, minimum size=1.1cm, font=\large},
+			%every edge/.style={->, thick, >=stealth}
+			]
+			% Knoten
+			\node (1) at (0,0) {1};
+			\node (2) at (3,1.5) {2};
+			\node (3) at (6,0) {3};
+			\node (4) at (3,-1.5) {4};
+			% Kanten
+			\draw[->, >=stealth] (1) -- (2);
+			\draw[->, >=stealth] (1) -- (4);
+			\draw[->, >=stealth] (2) -- (3);
+			\draw[->, >=stealth] (4) -- (3);
+			\draw[->, >=stealth] (2) -- (4);
+		\end{tikzpicture}
+	}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+	\centering
+	$$A = \begin{pmatrix}
+		0 & 1 & 0 & 1 \\
+		0 & 0 & 1 & 1 \\
+		0 & 0 & 0 & 0 \\
+		0 & 0 & 1 & 0
+	\end{pmatrix}$$
+\end{minipage}
+\newline
+\newline
+\newline
+Zunächst erfolgt die Berechnung der kürzesten Distanzen mit MM-APSD($A$):
+$$D = \begin{pmatrix}
+	0 & 1 & 2 & 1 \\
+	\infty & 0 & 1 & 1 \\
+	\infty & \infty & 0 & \infty \\
+	\infty & \infty & 1 & 0
+\end{pmatrix}$$
+Für jedes $c \in \{0, 1, 2\}$ erstellen wir eine Matrix $F^{(c)}$, wobei $f_{sj}^{(c)} = 1$ falls $d_{sj} \equiv_3 (c-1)$.
+\textbf{$F^{(0)}$ (c-1 = -1 $\equiv_3$ 2):} $f_{sj}^{(0)} = 1$, falls $d_{sj} \equiv_3 2$
+$$F^{(0)} = \begin{pmatrix}
+	0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 0
+\end{pmatrix}$$
+\textbf{$F^{(1)}$ (c-1 = 0):} $f_{sj}^{(1)} = 1$, falls $d_{sj} \equiv_3 0$
+$$F^{(1)} = \begin{pmatrix}
+	1 & 0 & 0 & 0 \\
+	0 & 1 & 0 & 0 \\
+	0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 1
+\end{pmatrix}$$
+\textbf{$F^{(2)}$ (c-1 = 1):} $f_{sj}^{(2)} = 1$, falls $d_{sj} \equiv_3 1$
+$$F^{(2)} = \begin{pmatrix}
+	0 & 1 & 0 & 1 \\
+	0 & 0 & 1 & 1 \\
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 1 & 0
+\end{pmatrix}$$
+Dann werden die Witness Matrizen ermittelt mit \\
+\textbf{$W^{(0)} = \text{BMM-Witness}(A, F^{(0)})$:}
+Berechnung von $A \times F^{(0)}$:
+$$W^{(0)} = \begin{pmatrix}
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 0
+\end{pmatrix}$$
+\textbf{$W^{(1)} = \text{BMM-Witness}(A, F^{(1)})$:}
+Berechnung von $A \times F^{(1)}$:
+$$W^{(1)} = \begin{pmatrix}
+	0 & 2 & 0 & 4 \\
+	0 & 0 & 3 & 4 \\
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 0
+\end{pmatrix}$$
+\textbf{$W^{(2)} = \text{BMM-Witness}(A, F^{(2)})$:}
+Berechnung von $A \times F^{(2)}$:
+$$W^{(2)} = \begin{pmatrix}
+	0 & 0 & 2 & 2 \\
+	0 & 0 & 4 & 0 \\
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 0
+\end{pmatrix}$$
+Für jede Position $(i,j)$ wird der Zeuge gewählt aus $W^{(d_{ij} \bmod 3)}$ und die Nachfolgermatrix $S$ bestimmt:
+$$S = \begin{pmatrix}
+	0 & 2 & 2 & 4 \\
+	0 & 0 & 3 & 4 \\
+	0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 0
+\end{pmatrix}.$$
 \end{document}

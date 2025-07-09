@@ -1,5 +1,5 @@
-# strassen
-This is a simple Python project implementing the **Strassen** algorithm and required data structures. It also provides some documentation theory inside doc/. Experiments were conducted for original matrix multiplication in comparison to **Strassen** matrix multiplication. Interesting to observe that the first $n_0$ for which **Strassen** is faster than the original multiplication is $n = 132$ (Ubuntu 24.04.2. LTS, AMD Ryzen 5 7520U × 8 with 4384.00 MHz, RAM: 7.01 GB). Have a look at the plot of the experimental results:
+# Strassen-25
+This repository contains a document describing an optimzation of **Strassen**'s algorithm, **Strassen-25**, with a runtime of $O\left(n^{2.3219}\right)$. It also contains a simple Python project implementing the **Strassen** algorithm and required data structures. It also provides some documentation theory inside doc/. Experiments were conducted for original matrix multiplication in comparison to **Strassen** matrix multiplication. Interesting to observe that the first $n_0$ for which **Strassen** is faster than the original multiplication is $n = 132$ (Ubuntu 24.04.2. LTS, AMD Ryzen 5 7520U × 8 with 4384.00 MHz, RAM: 7.01 GB). Have a look at the plot of the experimental results:
 
 ![Performance Comparison: Standard vs. **Strassen** Matrix Multiplication](strassen_performance_comparison.svg)
 

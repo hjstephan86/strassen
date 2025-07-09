@@ -37,9 +37,9 @@
 \vspace{5em}
 \tableofcontents
 \newpage
-
-\section{Laufzeit}
-Beim Algorithmus von \textsc{Strassen} für die Multiplikation von zwei $n \times n$ Matrizen lautet die Rekurrenzgleichung zur Ermittlung der Laufzeit $T(n)$ des Algorithmus
+Der Algorithmus von \textsc{Strassen} multipliziert zwei $n \times n$ Matrizen $A$ und $B$ effizient, da er nicht 8 sondern nur 7 Matrixmultiplikationen benötigt. In jedem rekursiven Aufruf teilt er $A$ und $B$ und ermittelt das Produkt $C = A \cdot B$ mit einer Laufzeit von $O(n^{2.8074})$.
+\section{Laufzeitanalyse}
+Für die Multiplikation von zwei $n \times n$ Matrizen lautet die Rekurrenzgleichung für den Algorithmus von \textsc{Strassen}
 \begin{align*}
 	T(n) = 7 \: T(\tfrac{n}{2}) + c\: n^2.
 \end{align*}
@@ -292,7 +292,7 @@ Damit in jedem Rekursionsschritt die Produkte $A_{ij}B_{ij}$ effizient gespeiche
 	Es gibt keinen Teile-und-Herrsche Algorithmus zur Multiplikation von $n \times n$ Matrizen, der durch Nutzen von Abhängigkeiten weniger als 8 Matrixmultiplikationen benötigt und damit auch weniger als 5 Matrixmultiplikationen benötigt. 
 \end{satz}
 \begin{proof}
-	Angenommen, es gibt einen Teile-und-Herrsche Algorithmus zur Multiplikation von $n \times n$ Matrizen, der mit weniger als 5 Matrixmultiplikationen auskommt, dann muss dieser Algorithmus auch Abhängigkeiten $P_r = (P_s, P_t, A_{ij}B_{ij})$ verwenden, mit denen $P_r$ ermittelt werden kann, $r < 5$. Da $dim(A_{ij}) = dim(B_{ij}) = \frac{n}{2}$, ist es nicht möglich $C = AB$ zu berechnen. Das gesamte Bild der \textit{projezierten} Produktmatrix $C$ kann nur projeziert werden, wenn mindestens mehr als die Hälfte beider Matrizen $A_{ij}$ und $B_{ij}$ zum Projezieren verfügbar ist.
+	Angenommen, es gibt einen Teile-und-Herrsche Algorithmus zur Multiplikation von $n \times n$ Matrizen, der mit weniger als 5 Matrixmultiplikationen auskommt, dann muss dieser Algorithmus auch Abhängigkeiten $P_r = (P_s, P_t, A_{ij}B_{ij})$ verwenden, mit denen $P_r$ ermittelt werden kann, $r < 5$. Da $dim(A_{ij}) = dim(B_{ij}) = \frac{n}{2}$, ist es nicht möglich $C = AB$ zu berechnen. Das gesamte Bild der \textit{projizierten} Produktmatrix $C$ kann nur projiziert werden, wenn mindestens mehr als die Hälfte beider Matrizen $A_{ij}$ und $B_{ij}$ zum Projizieren verfügbar ist.
 \end{proof}
 \begin{satz}
 	Das optimale Teile-und-Herrsche Prinzip ist die effizienteste Methode, um Probleme zu lösen, wenn die Probleminstanz bei jedem rekursiven Aufruf halbiert wird. 
@@ -358,7 +358,7 @@ Vielleicht kann man in Zukunft ein Problem der Klasse $\mathbf{P_2}$ auch effizi
 \end{align*}
 Beispiele für Probleme, die in $\mathbf{L}$ enthalten sind, sind die $n \times n$ Matrixmultiplikation und das Sortieren von ganzen Zahlen. Beide Probleme lassen sich mit dem optimalen Teile-und-Herrsche Prinzip lösen.
 
-\subsection{Experimentelle Ergebnisse}
+\subsection{Erwartete Ergebnisse}
 Bei der Analyse der zu messenden Laufzeit von Algorithmus \textsc{Strassen-25} ist zu erwarten, dass dieser mit nur 5 Matrixmultiplikationen deutlich weniger Rechenzeit benötigt als der Algorithmus von \textsc{Strassen} mit 7 Matrixmultiplikationen.
 
 Die Tabelle \ref{tab:operations-comparison} zeigt die theoretische Anzahl benötigter Operationen für die Matrixmultiplikation in Abhängigkeit von $n$. Die Operationen sind elementare arithmetische Operationen wie Multiplikationen und Additionen/Subtraktionen von Skalaren. Die Anzahl der Operationen in der Tabelle sind asymptotisch und ignorieren konstante Faktoren, um die Skalierungseffekte zu betonen.
@@ -389,7 +389,7 @@ Die Tabelle \ref{tab:operations-comparison} zeigt die theoretische Anzahl benöt
 		\hline
 	\end{tabular}
 \end{table}
-Die Wahl des optimalen Algorithmus zur Matrixmultiplikation hängt stark von der Größe der Matrizen und dem spezifischen Anwendungsbereich ab. Interessant ist, dass schon für $n = 100$ nur $10^{4}$ Operationen benötigt werden von \textsc{Strassen-25} und dagegen $10^{5}$ Operationen von \textsc{Strassen}. Für $n \geq 10.000$ unterscheiden sich \textsc{Strassen-25} und \textsc{Strassen} um 2 Zehnerpotenzen und für $n \geq 10^8$ unterscheiden sie sich um 6 Zehnerpotenzen. Praktische Anwendungsbereiche für die $n \times n$ Matrixmultiplikation sind die folgenden:
+Die Wahl des geeigneten Algorithmus zur Matrixmultiplikation hängt stark von der Größe der Matrizen und dem spezifischen Anwendungsbereich ab. Interessant ist, dass schon für $n = 100$ nur $10^{4}$ Operationen benötigt werden von \textsc{Strassen-25} und dagegen $10^{5}$ Operationen von \textsc{Strassen}. Für $n \geq 10.000$ unterscheiden sich \textsc{Strassen-25} und \textsc{Strassen} um 2 Zehnerpotenzen und für $n \geq 10^8$ unterscheiden sie sich um 6 Zehnerpotenzen. Praktische Anwendungsbereiche für die $n \times n$ Matrixmultiplikation sind die folgenden:
 
 \begin{enumerate}
 	\item \textbf{Kleine Matrizen} ($n < 200$): Für kleinere Matrizen, wie sie in der Computergrafik oder bei einfachen linearen Gleichungssystemen vorkommen, ist der Standardalgorithmus mit $O(n^3)$ aufgrund seines geringen zusätzlichen Aufwands für die Rekursion und optimaler Cache-Nutzung die erste Wahl.
@@ -400,7 +400,7 @@ Die Wahl des optimalen Algorithmus zur Matrixmultiplikation hängt stark von der
 \end{enumerate}
 
 \section{Signalübertragung}
-Für die Signalübertragung ist es wichtig, das Signal vom Sender zum Empfänger sicher zu übertragen. Welche kleinste Einheit eignet sich dabei als die optimale? Bisher betrachtet wurde: Es gibt die 2 zum Teilen beim optimalen Teile-und-Herrsche Prinzip. Es gibt die Exponentialfunktion zur Basis 2. Es gibt die logarithmische Laufzeit. Darüber hinaus gibt es das Binärsystem, bei dem die kleinste Einheit durch 2 Zustände repräsentiert wird.
+Für die Signalübertragung ist es wichtig, das Signal vom Sender zum Empfänger sicher zu übertragen. Welche kleinste Einheit eignet sich dabei als die optimale? Bisher betrachtet wurde: Es gibt die 2 zum Teilen beim optimalen Teile-und-Herrsche Prinzip. Es gibt die Exponentialfunktion zur Basis 2. Es gibt die logarithmische Laufzeit. Es das Binärsystem, bei dem die kleinste Einheit durch 2 Zustände repräsentiert wird.
 \begin{satz}
 	Das Binärsystem ist optimal für die Signalübertragung, bei der elektronische Signale genutzt werden: für an (1) und für aus (0).
 \end{satz}
@@ -424,7 +424,7 @@ Das Signal-Rausch-Verhältnis (SNR) ist dabei der Quotient aus der durchschnittl
 \begin{align*}
 	\text{S}/\text{N} = 10 \cdot \log_{10} \bigg(\frac{\text{P}_{\text{Sign}}}{\text{P}_{\text{Nois}}}\bigg).
 \end{align*}
-Beträgt die Signalleistung zum Beispiel $\text{P}_{\text{Sign}} = 100\text{mW}$ und die Rauschleistung $\text{P}_{\text{Sign}} = 1\text{mW}$, dann ist 
+Beträgt die durchschnittliche Signalleistung zum Beispiel $\text{P}_{\text{Sign}} = 100\text{mW}$ und die durchschnittliche Rauschleistung $\text{P}_{\text{Sign}} = 1\text{mW}$, dann ist 
 \begin{align*}
 	\text{S}/\text{N} = 10 \cdot \log_{10} \bigg(\frac{100\text{mW}}{1{\text{mW}}}\bigg) = 20.
 \end{align*}
@@ -456,7 +456,9 @@ Das Signal-Rausch-Verhältnis wird nicht in dB angegeben, da es nur ein Verhält
 Hochpräzise Messsysteme und Spezialanwendungen nutzen dieses Verhältnis. Bei einem SNR, das zwischen 25 und 40 liegt, ist die Qualität für die Signalübertragung sehr gut und ermöglicht z.B. 4K-Streaming. Bei einem SNR zwischen 10 und 15 ist die Qualität akzeptabel für normale Videoanrufe oder nicht-kritisches Streaming.
 
 \section{Der Algorithmus MM-APSP}
-Mit dem Algorithmus von \textsc{Strassen-25} lassen sich $n \times n$ Matrizen effizient multiplizieren. Betrachte die beiden Booleschen $n \times n$ Matrizen $A$ und $B$, deren Einträge entweder 0 oder 1 sind. Das Boolesche Produkt $P$ von $A$ und $B$ ist eine Matrix, deren Einträge $p_{ij}$ wie folgt definiert sind:
+Die effiziente Matrixmultiplikation hat einige praktische Anwendungsbereiche, z.B. beim \textit{Finden der kürzesten Wege für alle Knoten $v \in V$} in einem Graphen $G = (V, E)$. Das Problem, den kürzesten Weg für einen Startknoten $s \in V$ zu finden, löst z.B. die \textit{Tiefensuche} in $O(\left|V\right|  + \left| E\right|)$. Wie effizient kann das Problem \textit{All-Pairs-Shortest-Paths (APSP)} gelöst werden?
+
+Betrachte die beiden Booleschen $n \times n$ Matrizen $A$ und $B$, deren Einträge entweder 0 oder 1 sind. Das Boolesche Produkt $P$ von $A$ und $B$ ist eine Matrix, deren Einträge $p_{ij}$ wie folgt definiert sind:
 $$p_{ij}=\bigvee_{k=1}^{n}(a_{ik}\wedge b_{kj}).$$
 Hierbei repräsentieren $\bigvee$ und $\wedge$ die Booleschen Operatoren ODER und UND. Dies bedeutet, dass $p_{ij}=1$ genau dann ist, wenn es mindestens ein $k$ gibt, für das sowohl $a_{ik}=1$ als auch $b_{kj}=1$ gilt.
 
@@ -674,4 +676,30 @@ $$S = \begin{pmatrix}
 	0 & 0 & 0 & 0 \\
 	0 & 0 & 0 & 0
 \end{pmatrix}.$$
+
+\section{Zusammenfassung}
+In dieser Arbeit wird der Algorithmus von \textsc{Strassen} zur effizienten Multiplikation von Matrizen vorgestellt. Der \textsc{Strassen}-Algorithmus multipliziert zwei $n \times n$ Matrizen $A$ und $B$ unter Verwendung von nur 7 Matrixmultiplikationen anstelle der üblichen 8. Die Laufzeit des Algorithmus wird durch die Rekurrenzgleichung $T(n) = 7 \cdot T\left(\frac{n}{2}\right) + c \cdot n^2$ beschrieben. Der Algorithmus von \textsc{Strassen} hat damit eine Laufzeit von $O(n^{2.8074})$, welche analysiert wird. Der Algorithmus wird in einem Pseudocode vorgestellt. Er unterteilt die Matrizen in 4 Teilmatrizen und berechnet 7 Produkte, die dann zur Berechnung der 4 Blöcke der Ergebnismatrix verwendet werden.
+
+Eine Python-Implementierung des Algorithmus wurde erstellt, um die theoretische Laufzeitanalyse zu überprüfen. In Experimenten werden Matrizen unterschiedlicher Größe (von 4 bis 256) getestet. Die Ergebnisse zeigen, dass für kleinere Matrizen der Standardalgorithmus schneller ist, während für größere Matrizen \textsc{Strassen}s Algorithmus überlegen ist. Ein Schwellwert von 32 wird gesetzt, um bei kleinen Matrizen auf die Standardmultiplikation umzuschalten.
+
+Eine Methode zur Reduzierung der Matrixmultiplikationen von 7 auf 5 wird beschrieben, was die Laufzeit auf $O(n^{2.3219})$ senkt. Diese Optimierung nutzt die Diagonale der Matrix $B$ und erfordert vorherige Berechnungen der Produkte. Der Algorithmus \textsc{Strassen-25} setzt diese Methode um. Das \textit{optimale Teile-und-Herrsche Prinzip} wird vorgestellt und gezeigt, dass es die effizienteste Methode ist, um Probleme zu lösen, wenn die Probleminstanz bei jedem rekursiven Aufruf halbiert wird. Komplexitätsklassen werden eingeführt, bewiesen dass $P = NP$ ist und erwartete Laufzeitergebnisse des Algorithmus von \textsc{Strassen-25} vorgestellt. Es wird gezeigt, dass schneller als mit Laufzeit $O(n^{2.3219})$ zwei $n \times n$ Matrizen \textit{nicht} multipliziert werden können.
+
+Es wird gezeigt, dass das \textit{Binärsystem optimal für die Signalübertragung} ist. Die Shannon-Hartley-Gleichung wird vorgestellt, um die maximale Datenrate über einen Kommunikationskanal zu beschreiben, wobei die Bedeutung des Signal-Rausch-Verhältnisses hervorgehoben wird.
+
+Der Algorithmus MM-APSP zur Berechnung der kürzesten Wege für alle Knoten in einem Graphen wird behandelt. Das Boolesche Produkt von Matrizen wird verwendet, um die Erreichbarkeit zwischen Knoten zu bestimmen. Ein randomisierter Algorithmus wird vorgestellt, der eine erwartete Laufzeit von $O(M(n) \log(n))$ hat, wobei $M(n)$ die Laufzeit der Matrixmultiplikation ist. Dieser berechnet Zeugen auf dem kürzesten Weg eines jeden Knoten und wird dann von MM-APSP aufgerufen. Es wird gezeigt, dass er Algorithmus MM-APSP damit insgesamt eine erwartete Laufzeit von $O(n^{2.3219} \log^2 n)$, wenn für die Matrixmultiplikation \textsc{Strassen-25} verwendet wird.
+
+\subsection{Ausblick}
+Es wurde gezeigt, dass $\mathbf{P} = \mathbf{NP}$ und damit lohnt es sich, auch die Probleme genauer zu betrachten, von denen man bisher vermutete, dass es für sie keinen Algorithmus gibt, der das Problem effizienter, d.h., in polynomieller Laufzeit lösen kann.
+
+Es werden Komplexitätsklassen $\mathbf{L}$, $\mathbf{P_2}$ und $\mathbf{P_3}$ vorgestellt, die jeweils die Menge aller Probleme enthalten, deren Algorithmen nach einem \textit{charakteristischen Lösungsprinzip} arbeiten. Zum Beispiel sind in der Klasse $\mathbf{L}$ alle Probleme enthalten, deren Algorithmen nach dem optimalen Teile-und-Herrsche Prinzip arbeiten. In der Klasse $\mathbf{P_2}$ sind alle Probleme enthalten, deren Algorithmen nach dem Prinzip der dynamischen Programmierung arbeiten und deren Lösung quadratische Laufzeit benötigt. Die Klassen $\mathbf{L}$, $\mathbf{P_2}$ und $\mathbf{P_3}$ sind in $\mathbf{P}$ enthalten aber untereinander enthalten sie sich nicht:
+\begin{align*}
+	\mathbf{L} \subset \mathbf{P}, \quad \mathbf{P_2} \subset \mathbf{P}, \quad \mathbf{P_3} \subset \mathbf{P}, \quad \mathbf{L} \not \subset \mathbf{P_2}, \quad \mathbf{P_2} \not \subset \mathbf{P_3}, \quad \mathbf{L} \not \subset \mathbf{P_3}.
+\end{align*}
+In Zukunft macht es Sinn, diesen Gedanken der Komplexitätsklassen konsequent zu nutzen, um weitere Komplexitätsklassen zu definieren. Dann lohnt es sich, Probleme zu betrachten, für die evtl. ein effizienteres Lösungsprinzip infrage kommt. Damit wird der Lösungssuche das Lösungsprinzip für die jeweilige Komplexitätsklasse mitgegeben, was das Finden einer effizienteren Lösung vereinfachen kann.
+
+Der Algorithmus von \textsc{Strassen-25} für die Matrixmultiplikation von zwei $n \times n$ Matrizen hat eine Laufzeit von $O(n^{2.3219})$. Ruft der Algorithmus MM-APSP für die Matrixmultiplikation \textsc{Strassen-25} auf, hat MM-APSP eine erwartete Laufzeit von $O(n^{2.3219} \log^2 n)$. 
+
+In der Beweisführung, dass es keinen Teile-und-Herrsche Algorithmus zur Multiplikation von $n \times n$ Matrizen gibt, der weniger als 5 Matrixmultiplikationen benötigt, wird die Eigenschaft des Projizierens genutzt. Zwei Vektoren $\boldsymbol{u}$ und $\boldsymbol{v}$ projizieren $\boldsymbol{w}$ genau dann, wenn es Konstanten $k_1$ und $k_2$ gibt, so dass $$k_1 \boldsymbol{u} + k_2\boldsymbol{v} = \boldsymbol{w} \neq \boldsymbol{0}.$$ Es ist im Allgemeinen von Interesse, eine minimale Projektion zu finden: Finde eine minimale Projektion, nimm noch eine Konstante $k$ weg, dann ist es die \textit{größte Einheit}, die aus sich heraus, egal wie, nichts mehr projizieren kann außer $\boldsymbol{0}$. Die Idee des Algorithmus von \textsc{Strassen-25} eignet sich zum Finden von größten, nicht projizierbaren Einheiten.
+
+Die Matrixmultiplikation ist eine der wichtigsten und am häufigsten ausgeführten Operationen in Rechenzentren für Künstliche Intelligenz (KI). Insbesondere macht sich bei Deep-Learning-Anwendungen die optimierte Matrixmultiplikation von \textsc{Strassen-25} sehr bemerkbar, wodurch Betreiber von KI-Rechenzentren viel Zeit und Kosten sparen. Interessant ist, welche anderen Anwendungsbereiche auch davon profitieren könnten, wenn \textsc{Strassen-25} für die Matrixmultiplikation verwendet wird.
 \end{document}

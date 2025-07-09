@@ -1,4 +1,4 @@
-# bmmwitnesses.py
+# bmm_witnesses.py
 
 import time
 
@@ -99,7 +99,7 @@ def bmm_witness(A, B):
 
     return Matrix(product_data_C), Matrix(witness_data_W)
 
-# Basic test if bmmwitnesses.py is run directly
+# Basic test if bmm_witnesses.py is run directly
 if __name__ == "__main__":
     print("--- Testing Boolean Matrix Multiplication ---")
     A_data = [[1, 0, 1],

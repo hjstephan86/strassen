@@ -1,9 +1,9 @@
-# bmmwitnesses_test.py
+# bmm_witnesses_test.py
 
 import unittest
 from src.matrix import Matrix # Assuming your Matrix class
 from src.strassen import strassen_multiply # Assuming your strassen_multiply function
-from src.bmmwitnesses import boolean_matrix_multiply, bmm_witness
+from src.bmm_witnesses import boolean_matrix_multiply, bmm_witness
 
 class TestBMMWitnesses(unittest.TestCase):
 
